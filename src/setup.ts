@@ -104,7 +104,7 @@ export async function runSetup(opts: { cliVersion?: string; token?: string } = {
     items.push({
       label: padRight(shortenPath(config.path), 50) + chalk.dim(tool ? ` [${tool}]` : ''),
       value: `config:${config.path}`,
-      checked: !ok,
+      checked: false,  // let user explicitly select which tools to configure
       status: ok ? `configured (${fp})` : !config.exists ? 'will create' : fp ? `mismatch (${fp})` : 'missing',
       statusColor: ok ? 'green' : 'yellow',
     });
