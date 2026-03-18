@@ -7,7 +7,7 @@ export const sendCommand = cli({
   domain: 'localhost',
   strategy: Strategy.UI,
   browser: true,
-  args: [{ name: 'text', required: true, help: 'Text, command (e.g. /review), or skill (e.g. $imagegen)' }],
+  args: [{ name: 'text', required: true, positional: true, help: 'Text, command (e.g. /review), or skill (e.g. $imagegen)' }],
   columns: ['Status', 'InjectedText'],
   func: async (page, kwargs) => {
     const textToInsert = kwargs.text as string;
