@@ -3,7 +3,7 @@ name: opencli
 description: "OpenCLI — Make any website or Electron App your CLI. Zero risk, AI-powered, reuse Chrome login. 80+ commands across 19 sites."
 version: 0.7.3
 author: jackwener
-tags: [cli, browser, web, mcp, playwright, bilibili, zhihu, twitter, github, v2ex, hackernews, reddit, xiaohongshu, xueqiu, youtube, boss, coupang, AI, agent]
+tags: [cli, browser, web, chrome-extension, cdp, bilibili, zhihu, twitter, github, v2ex, hackernews, reddit, xiaohongshu, xueqiu, youtube, boss, coupang, AI, agent]
 ---
 
 # OpenCLI
@@ -12,7 +12,7 @@ tags: [cli, browser, web, mcp, playwright, bilibili, zhihu, twitter, github, v2e
 
 > [!CAUTION]
 > **AI Agent 必读：创建或修改任何适配器之前，你必须先阅读 [CLI-EXPLORER.md](./CLI-EXPLORER.md)！**
-> 该文档包含完整的 API 发现工作流（必须使用 Playwright MCP Bridge 浏览器探索）、5 级认证策略决策树、平台 SDK 速查表、`tap` 步骤调试流程、分页 API 模板、级联请求模式、以及常见陷阱。
+> 该文档包含完整的 API 发现工作流（必须使用浏览器探索）、5 级认证策略决策树、平台 SDK 速查表、`tap` 步骤调试流程、分页 API 模板、级联请求模式、以及常见陷阱。
 > **本文件（SKILL.md）仅提供命令参考和简化模板，不足以正确开发适配器。**
 
 ## Install & Run
@@ -34,8 +34,8 @@ npm update -g @jackwener/opencli
 
 Browser commands require:
 1. Chrome browser running **(logged into target sites)**
-2. [Playwright MCP Bridge](https://chromewebstore.google.com/detail/playwright-mcp-bridge/mmlmfjhmonkocbjadbfplnigmagldckm) extension installed
-3. Run `opencli setup` to auto-discover token and configure all tools
+2. **opencli Browser Bridge** Chrome extension installed (load `extension/` as unpacked or install from Chrome Web Store)
+3. No further setup needed — the daemon auto-starts on first browser command
 
 > **Note**: You must be logged into the target website in Chrome before running commands. Tabs opened during command execution are auto-closed afterwards.
 
@@ -227,7 +227,7 @@ opencli bilibili hot -v         # Show each pipeline step and data flow
 
 > [!IMPORTANT]
 > **完整模式 — 在写任何代码之前，先阅读 [CLI-EXPLORER.md](./CLI-EXPLORER.md)。**
-> 它包含：① AI Agent 浏览器探索工作流（必须用 Playwright MCP 抓包验证 API）② 认证策略决策树 ③ 平台 SDK（如 Bilibili 的 `apiGet`/`fetchJson`）④ YAML vs TS 选择指南 ⑤ `tap` 步骤调试方法 ⑥ 级联请求模板 ⑦ 常见陷阱表。
+> 它包含：① AI Agent 浏览器探索工作流 ② 认证策略决策树 ③ 平台 SDK（如 Bilibili 的 `apiGet`/`fetchJson`）④ YAML vs TS 选择指南 ⑤ `tap` 步骤调试方法 ⑥ 级联请求模板 ⑦ 常见陷阱表。
 > **下方仅为简化模板参考，直接使用极易踩坑。**
 
 ### YAML Pipeline (declarative, recommended)
@@ -374,16 +374,18 @@ ${{ index + 1 }}
 
 | Variable | Default | Description |
 |----------|---------|-------------|
+| `OPENCLI_DAEMON_PORT` | 19825 | Daemon listen port |
 | `OPENCLI_BROWSER_CONNECT_TIMEOUT` | 30 | Browser connection timeout (sec) |
 | `OPENCLI_BROWSER_COMMAND_TIMEOUT` | 45 | Command execution timeout (sec) |
 | `OPENCLI_BROWSER_EXPLORE_TIMEOUT` | 120 | Explore timeout (sec) |
-| `PLAYWRIGHT_MCP_EXTENSION_TOKEN` | — | Auto-approve extension connection |
+| `OPENCLI_VERBOSE` | — | Show daemon/extension logs |
 
 ## Troubleshooting
 
 | Issue | Solution |
 |-------|----------|
 | `npx not found` | Install Node.js: `brew install node` |
-| `Timed out connecting to browser` | 1) Chrome must be open 2) Install MCP Bridge extension and configure token |
+| `Extension not connected` | 1) Chrome must be open 2) Install opencli Browser Bridge extension |
 | `Target page context` error | Add `navigate:` step before `evaluate:` in YAML |
-| Empty table data | Check if evaluate returns JSON string (MCP parsing) or data path is wrong |
+| Empty table data | Check if evaluate returns correct data path |
+| Daemon issues | `curl localhost:19825/status` to check, `curl localhost:19825/logs` for extension logs |

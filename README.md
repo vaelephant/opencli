@@ -49,61 +49,18 @@ Turn ANY Electron application into a CLI tool! Recombine, script, and extend app
 
 > **⚠️ Important**: Browser commands reuse your Chrome login session. You must be logged into the target website in Chrome before running commands. If you get empty data or errors, check your login status first.
 
-OpenCLI connects to your browser through the Playwright MCP Bridge extension.
-It prefers an existing local/global `@playwright/mcp` install and falls back to `npx -y @playwright/mcp@latest` automatically when no local MCP server is found.
+OpenCLI connects to your browser through a lightweight **Browser Bridge** Chrome Extension + micro-daemon (zero config, auto-start).
 
-### Playwright MCP Bridge Extension Setup
+### Browser Bridge Extension Setup
 
-1. Install **[Playwright MCP Bridge](https://chromewebstore.google.com/detail/playwright-mcp-bridge/mmlmfjhmonkocbjadbfplnigmagldckm)** extension in Chrome.
-2. Run `opencli setup` — discovers the token, distributes it to your tools, and verifies connectivity:
+1. Install the **opencli Browser Bridge** extension in Chrome (from the Chrome Web Store or load the `extension/` folder as unpacked).
+2. That's it! The daemon auto-starts when you run any browser command. No tokens, no manual configuration.
 
-```bash
-opencli setup
-```
-
-The interactive TUI will:
-- 🔍 Auto-discover `PLAYWRIGHT_MCP_EXTENSION_TOKEN` from Chrome (no manual copy needed)
-- ☑️ Show all detected tools (Codex, Cursor, Claude Code, Gemini CLI, etc.)
-- ✏️ Update only the files you select (Space to toggle, Enter to confirm)
-- 🔌 Auto-verify browser connectivity after writing configs
-
-> **Tip**: Use `opencli doctor` for ongoing diagnosis and maintenance:
+> **Tip**: Use `opencli doctor` for ongoing diagnosis:
 > ```bash
-> opencli doctor            # Read-only token & config diagnosis
-> opencli doctor --live     # Also test live browser connectivity
-> opencli doctor --fix      # Fix mismatched configs (interactive)
-> opencli doctor --fix -y   # Fix all configs non-interactively
+> opencli doctor            # Check extension + daemon connectivity
+> opencli doctor --live     # Also test live browser commands
 > ```
-
-**Alternative: CDP Mode (For Servers/Headless)**
-If you cannot install the browser extension (e.g. running OpenCLI on a remote headless server), you can connect OpenCLI to your local Chrome via CDP using SSH tunnels or reverse proxies. See the [CDP Connection Guide](./CDP.md) for detailed instructions.
-
-<details>
-<summary>Manual setup (alternative)</summary>
-
-Add token to your MCP client config (e.g. Claude/Cursor):
-
-```json
-{
-  "mcpServers": {
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest", "--extension"],
-      "env": {
-        "PLAYWRIGHT_MCP_EXTENSION_TOKEN": "<your-token-here>"
-      }
-    }
-  }
-}
-```
-
-Export in shell (e.g. `~/.zshrc`):
-
-```bash
-export PLAYWRIGHT_MCP_EXTENSION_TOKEN="<your-token-here>"
-```
-
-</details>
 
 ## Quick Start
 
@@ -111,7 +68,6 @@ export PLAYWRIGHT_MCP_EXTENSION_TOKEN="<your-token-here>"
 
 ```bash
 npm install -g @jackwener/opencli
-opencli setup   # One-time: configure Playwright MCP token
 ```
 
 Then use directly:
@@ -297,15 +253,16 @@ npx vitest run tests/e2e/                    # E2E tests
 
 ## Troubleshooting
 
-- **"Failed to connect to Playwright MCP Bridge"**
-  - Ensure the Playwright MCP extension is installed and **enabled** in your running Chrome.
-  - Restart the Chrome browser if you just installed the extension.
+- **"Extension not connected"**
+  - Ensure the opencli Browser Bridge extension is installed and **enabled** in your running Chrome.
+  - Restart Chrome if you just installed the extension.
 - **Empty data returns or 'Unauthorized' error**
-  - Your login session in Chrome might have expired. Open a normal Chrome tab, navigate to the target site, and log in or refresh the page to prove you are human.
+  - Your login session in Chrome might have expired. Open a normal Chrome tab, navigate to the target site, and log in or refresh the page.
 - **Node API errors**
   - Make sure you are using Node.js >= 20. Some dependencies require modern Node APIs.
-- **Token issues**
-  - Run `opencli doctor` to diagnose token configuration across all tools.
+- **Daemon issues**
+  - Check daemon status: `curl localhost:19825/status`
+  - View extension logs: `curl localhost:19825/logs`
 
 ## Releasing New Versions
 
