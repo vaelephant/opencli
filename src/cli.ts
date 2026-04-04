@@ -26,7 +26,12 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .name('opencli')
     .description('Make any website your CLI. Zero setup. AI-powered.')
     .version(PKG_VERSION)
-    .enablePositionalOptions();
+    .enablePositionalOptions()
+    .option(
+      '-v, --verbose',
+      'Print execution flow ([flow] traces) and debug output on stderr (same as -v on a subcommand)',
+      false,
+    );
 
   // ── Built-in: list ────────────────────────────────────────────────────────
 
@@ -544,6 +549,20 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     }
     program.outputHelp();
     process.exitCode = EXIT_CODES.USAGE_ERROR;
+  });
+
+  // Propagate global or nested `-v` / `--verbose` to OPENCLI_VERBOSE before any command action runs
+  // (so `opencli -v site cmd` works, not only `opencli site cmd -v`).
+  program.hook('preAction', (thisCommand) => {
+    let cmd: Command | null = thisCommand;
+    while (cmd) {
+      const o = cmd.opts() as { verbose?: boolean };
+      if (o.verbose === true) {
+        process.env.OPENCLI_VERBOSE = '1';
+        break;
+      }
+      cmd = cmd.parent ?? null;
+    }
   });
 
   program.parse();

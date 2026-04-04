@@ -332,6 +332,17 @@ opencli bilibili hot -f csv     # CSV
 opencli bilibili hot -v         # 详细模式：展示管线执行步骤调试信息
 ```
 
+**执行过程日志（`[flow]`）**：默认关闭。开启方式任选其一：
+
+- 在**子命令**上加 `-v`：`opencli toutiao weitoutiao -v "内容"`（与 `--format` 等并列）
+- 在**最前面**加 `-v`（全局）：`opencli -v toutiao weitoutiao "内容"`（需使用已包含全局 `-v` 的版本）
+- 或环境变量：`OPENCLI_VERBOSE=1 opencli toutiao weitoutiao "内容"`
+
+日志在 **stderr**，不会混进 JSON/YAML 等标准输出。未加 `-v` 时不会打印这些行。  
+每条日志前会有**本机时间戳**（`HH:mm:ss.SSS`），便于对照耗时。
+
+若命令动辄十几秒，多半是 **真实网页加载 + 适配器内固定等待 + 等 UI 成功提示**，属常见情况；详见仓库根目录 `**faq.md`** 中的「为什么有些命令要跑十几秒甚至更久？」。
+
 ## 退出码
 
 opencli 遵循 Unix `sysexits.h` 惯例，可无缝接入 shell 管道和 CI 脚本：

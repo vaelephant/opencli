@@ -2,6 +2,7 @@ import { BrowserBridge, CDPBridge } from './browser/index.js';
 import type { IPage } from './types.js';
 import { TimeoutError } from './errors.js';
 import { isElectronApp } from './electron-apps.js';
+import { log } from './logger.js';
 
 /**
  * Returns the appropriate browser factory based on site type.
@@ -72,6 +73,10 @@ export async function browserSession<T>(
   fn: (page: IPage) => Promise<T>,
   opts: { workspace?: string; cdpEndpoint?: string } = {},
 ): Promise<T> {
+  const factoryName = BrowserFactory.name || 'BrowserFactory';
+  const ws = opts.workspace ?? '(default)';
+  const cdp = opts.cdpEndpoint ? ` CDP=${opts.cdpEndpoint}` : '';
+  log.flow('session', `open ${factoryName} workspace=${ws}${cdp}`);
   const browser = new BrowserFactory();
   try {
     const page = await browser.connect({
@@ -79,8 +84,10 @@ export async function browserSession<T>(
       workspace: opts.workspace,
       cdpEndpoint: opts.cdpEndpoint,
     });
+    log.flow('session', `${factoryName} connected — page handle ready`);
     return await fn(page);
   } finally {
+    log.flow('session', `close ${factoryName}`);
     await browser.close().catch(() => {});
   }
 }
