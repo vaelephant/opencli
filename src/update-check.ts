@@ -13,7 +13,7 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 import chalk from 'chalk';
-import { PKG_VERSION } from './version.js';
+import { PKG_VERSION } from './core/version.js';
 
 const CACHE_DIR = path.join(os.homedir(), '.opencli');
 const CACHE_FILE = path.join(CACHE_DIR, 'update-check.json');

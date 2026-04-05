@@ -1,5 +1,5 @@
-import { AuthRequiredError, CommandExecutionError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { AuthRequiredError, CommandExecutionError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { resolveTwitterQueryId } from './shared.js';
 
 const USER_BY_SCREEN_NAME_QUERY_ID = 'qRednkZG-rn1P6b48NINmQ';

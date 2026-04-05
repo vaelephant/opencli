@@ -1,5 +1,5 @@
-import { AuthRequiredError, CliError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { AuthRequiredError, CliError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 import {
   NOTEBOOKLM_DOMAIN,
   NOTEBOOKLM_HOME_URL,

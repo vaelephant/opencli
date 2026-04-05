@@ -1,6 +1,6 @@
-import { EmptyResultError } from '../../errors.js';
-import { cli, Strategy, type CommandArgs } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { EmptyResultError } from '../../core/errors.js';
+import { cli, Strategy, type CommandArgs } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 import {
   buildTiebaPostCardsFromPagePc,
   buildTiebaPostItems,

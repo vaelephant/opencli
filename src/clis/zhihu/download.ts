@@ -5,7 +5,7 @@
  *   opencli zhihu download --url "https://zhuanlan.zhihu.com/p/xxx" --output ./zhihu
  */
 
-import { cli, Strategy } from '../../registry.js';  // 导入cli、Strategy
+import { cli, Strategy } from '../../core/registry.js';  // 导入cli、Strategy
 import { downloadArticle } from '../../download/article-download.js'; // 导入downloadArticle
 
 cli({

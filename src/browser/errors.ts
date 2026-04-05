@@ -5,8 +5,8 @@
  * The daemon architecture has a single failure mode: daemon not reachable or extension not connected.
  */
 
-import { BrowserConnectError, type BrowserConnectKind } from '../errors.js';
-import { DEFAULT_DAEMON_PORT } from '../constants.js';
+import { BrowserConnectError, type BrowserConnectKind } from '../core/errors.js';
+import { DEFAULT_DAEMON_PORT } from '../core/constants.js';
 
 /**
  * Transient browser error patterns — shared across daemon-client, pipeline executor,

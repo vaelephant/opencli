@@ -4,7 +4,7 @@
  * Uses raw stdin mode + ANSI escape codes for interactive prompts.
  */
 import chalk from 'chalk';
-import { EXIT_CODES } from './errors.js';
+import { EXIT_CODES } from './core/errors.js';
 
 export interface CheckboxItem {
   label: string;

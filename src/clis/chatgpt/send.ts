@@ -1,7 +1,7 @@
 import { execSync, spawnSync } from 'node:child_process';
-import { cli, Strategy } from '../../registry.js';
-import type { IPage } from '../../types.js';
-import { getErrorMessage } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
+import { getErrorMessage } from '../../core/errors.js';
 import { activateChatGPT, selectModel, MODEL_CHOICES } from './ax.js';
 
 export const sendCommand = cli({

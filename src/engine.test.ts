@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { discoverClis, discoverPlugins, ensureUserCliCompatShims, PLUGINS_DIR } from './discovery.js';
-import { executeCommand } from './execution.js';
-import { getRegistry, cli, Strategy } from './registry.js';
-import { clearAllHooks, onAfterExecute } from './hooks.js';
+import { discoverClis, discoverPlugins, ensureUserCliCompatShims, PLUGINS_DIR } from './core/discovery.js';
+import { executeCommand } from './core/execution.js';
+import { getRegistry, cli, Strategy } from './core/registry.js';
+import { clearAllHooks, onAfterExecute } from './core/hooks.js';
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
@@ -27,7 +27,7 @@ globalThis.__opencli_helper_loaded__ = true;
 export const helper = true;
 `);
       await fs.promises.writeFile(commandPath, `
-import { cli, Strategy } from '${pathToFileURL(path.join(process.cwd(), 'src', 'registry.ts')).href}';
+import { cli, Strategy } from '${pathToFileURL(path.join(process.cwd(), 'src', 'core', 'registry.ts')).href}';
 cli({
   site: 'temp-site',
   name: 'hello',
@@ -60,7 +60,7 @@ cli({
       await fs.promises.mkdir(siteDir, { recursive: true });
       await fs.promises.writeFile(manifestPath, '{ invalid json');
       await fs.promises.writeFile(commandPath, `
-import { cli, Strategy } from '${pathToFileURL(path.join(process.cwd(), 'src', 'registry.ts')).href}';
+import { cli, Strategy } from '${pathToFileURL(path.join(process.cwd(), 'src', 'core', 'registry.ts')).href}';
 cli({
   site: 'fallback-site',
   name: 'hello',

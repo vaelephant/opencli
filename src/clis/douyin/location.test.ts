@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getRegistry } from '../../registry.js';
+import { getRegistry } from '../../core/registry.js';
 import './location.js';
 
 describe('douyin location registration', () => {

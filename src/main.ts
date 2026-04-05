@@ -16,13 +16,13 @@ if (process.platform !== 'win32') {
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { discoverClis, discoverPlugins, ensureUserCliCompatShims, USER_CLIS_DIR } from './discovery.js';
+import { discoverClis, discoverPlugins, ensureUserCliCompatShims, USER_CLIS_DIR } from './core/discovery.js';
 import { getCompletions } from './completion.js';
 import { runCli } from './cli.js';
-import { emitHook } from './hooks.js';
-import { installNodeNetwork } from './node-network.js';
+import { emitHook } from './core/hooks.js';
+import { installNodeNetwork } from './core/node-network.js';
 import { registerUpdateNoticeOnExit, checkForUpdateBackground } from './update-check.js';
-import { EXIT_CODES } from './errors.js';
+import { EXIT_CODES } from './core/errors.js';
 
 installNodeNetwork();
 

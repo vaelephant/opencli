@@ -10,10 +10,10 @@
  * chrome-extension:// tab that can't be debugged.
  */
 
-import type { BrowserCookie, ScreenshotOptions } from '../types.js';
+import type { BrowserCookie, ScreenshotOptions } from '../core/types.js';
 import { sendCommand } from './daemon-client.js';
 import { wrapForEval } from './utils.js';
-import { saveBase64ToFile } from '../utils.js';
+import { saveBase64ToFile } from '../core/utils.js';
 import { generateStealthJs } from './stealth.js';
 import { waitForDomStableJs } from './dom-helpers.js';
 import { BasePage } from './base-page.js';

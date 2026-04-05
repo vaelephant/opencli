@@ -9,7 +9,7 @@
  * getCookies, screenshot, tabs, etc.
  */
 
-import type { BrowserCookie, IPage, ScreenshotOptions, SnapshotOptions, WaitOptions } from '../types.js';
+import type { BrowserCookie, IPage, ScreenshotOptions, SnapshotOptions, WaitOptions } from '../core/types.js';
 import { generateSnapshotJs, scrollToRefJs, getFormStateJs } from './dom-snapshot.js';
 import {
   clickJs,

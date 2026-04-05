@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { CliError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { CliError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 import { stepFetch } from './fetch.js';
 
 afterEach(() => {
@@ -128,7 +128,7 @@ describe('stepFetch', () => {
 
   // W2: batch item failures emit a warning log
   it('logs a warning for each failed batch item in non-browser mode', async () => {
-    const { log } = await import('../../logger.js');
+    const { log } = await import('../../core/logger.js');
     const warnSpy = vi.spyOn(log, 'warn');
 
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
@@ -151,7 +151,7 @@ describe('stepFetch', () => {
   });
 
   it('logs a warning for each failed batch item in browser mode', async () => {
-    const { log } = await import('../../logger.js');
+    const { log } = await import('../../core/logger.js');
     const warnSpy = vi.spyOn(log, 'warn');
 
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue({

@@ -3,10 +3,10 @@
  * Browser interaction primitives.
  */
 
-import type { IPage } from '../../types.js';
+import type { IPage } from '../../core/types.js';
 import { render } from '../template.js';
 
-import { isRecord } from '../../utils.js';
+import { isRecord } from '../../core/utils.js';
 
 export async function stepNavigate(page: IPage | null, params: unknown, data: unknown, args: Record<string, unknown>): Promise<unknown> {
   if (isRecord(params) && 'url' in params) {

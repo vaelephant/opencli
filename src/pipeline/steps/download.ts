@@ -11,9 +11,9 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
-import type { IPage } from '../../types.js';
+import type { IPage } from '../../core/types.js';
 import { render } from '../template.js';
-import { getErrorMessage } from '../../errors.js';
+import { getErrorMessage } from '../../core/errors.js';
 import {
   httpDownload,
   ytdlpDownload,
@@ -27,7 +27,7 @@ import {
   formatCookieHeader,
 } from '../../download/index.js';
 import { DownloadProgressTracker, formatBytes } from '../../download/progress.js';
-import { mapConcurrent } from '../../utils.js';
+import { mapConcurrent } from '../../core/utils.js';
 
 export interface DownloadResult {
   status: 'success' | 'skipped' | 'failed';

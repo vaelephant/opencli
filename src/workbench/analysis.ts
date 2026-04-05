@@ -16,7 +16,7 @@ import {
   PAGINATION_PARAMS,
   LIMIT_PARAMS,
   FIELD_ROLES,
-} from './constants.js';
+} from '../core/constants.js';
 
 // ── URL pattern normalization ───────────────────────────────────────────────
 

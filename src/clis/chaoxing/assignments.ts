@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import { AuthRequiredError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { AuthRequiredError } from '../../core/errors.js';
 import {
   getCourses, initSession, enterCourse, getTabIframeUrl,
   parseAssignmentsFromDom, sleep,

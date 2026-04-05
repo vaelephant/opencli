@@ -7,7 +7,7 @@ import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
 import { pathToFileURL } from 'node:url';
-import { PLUGINS_DIR } from './discovery.js';
+import { PLUGINS_DIR } from './core/discovery.js';
 import type { LockEntry } from './plugin.js';
 import * as pluginModule from './plugin.js';
 

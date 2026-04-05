@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 import { DOUBAO_DOMAIN, DOUBAO_CHAT_URL, startNewDoubaoChat } from './utils.js';
 
 export const newCommand = cli({

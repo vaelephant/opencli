@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { IPage } from '../../../types.js';
+import type { IPage } from '../../../core/types.js';
 import { browserFetch } from './browser-fetch.js';
 
 function makePage(result: unknown): IPage {

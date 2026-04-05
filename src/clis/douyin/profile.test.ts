@@ -8,7 +8,7 @@ vi.mock('./_shared/browser-fetch.js', () => ({
   browserFetch: browserFetchMock,
 }));
 
-import { getRegistry } from '../../registry.js';
+import { getRegistry } from '../../core/registry.js';
 import './profile.js';
 
 describe('douyin profile registration', () => {

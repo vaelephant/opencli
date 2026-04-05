@@ -11,7 +11,7 @@ export interface RenderContext {
   index?: number;
 }
 
-import { isRecord } from '../utils.js';
+import { isRecord } from '../core/utils.js';
 
 export function render(template: unknown, ctx: RenderContext): unknown {
   if (typeof template !== 'string') return template;

@@ -21,8 +21,8 @@
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { WebSocketServer, WebSocket, type RawData } from 'ws';
-import { DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_IDLE_TIMEOUT } from './constants.js';
-import { EXIT_CODES } from './errors.js';
+import { DEFAULT_DAEMON_PORT, DEFAULT_DAEMON_IDLE_TIMEOUT } from './core/constants.js';
+import { EXIT_CODES } from './core/errors.js';
 import { IdleManager } from './idle-manager.js';
 
 const PORT = parseInt(process.env.OPENCLI_DAEMON_PORT ?? String(DEFAULT_DAEMON_PORT), 10);

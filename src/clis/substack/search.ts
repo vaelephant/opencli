@@ -1,5 +1,5 @@
-import { CommandExecutionError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { CommandExecutionError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 
 type SubstackPostResult = {
   title: string;

@@ -6,7 +6,7 @@
  */
 
 import chalk from 'chalk';
-import { DEFAULT_DAEMON_PORT } from '../constants.js';
+import { DEFAULT_DAEMON_PORT } from '../core/constants.js';
 
 const DAEMON_PORT = parseInt(process.env.OPENCLI_DAEMON_PORT ?? String(DEFAULT_DAEMON_PORT), 10);
 const DAEMON_URL = `http://127.0.0.1:${DAEMON_PORT}`;

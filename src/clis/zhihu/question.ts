@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import { AuthRequiredError, CliError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { AuthRequiredError, CliError } from '../../core/errors.js';
 
 cli({
   site: 'zhihu',

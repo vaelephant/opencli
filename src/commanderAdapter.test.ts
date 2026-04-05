@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { Command } from 'commander';
-import type { CliCommand } from './registry.js';
+import type { CliCommand } from './core/registry.js';
 
 const { mockExecuteCommand, mockRenderOutput } = vi.hoisted(() => ({
   mockExecuteCommand: vi.fn(),
   mockRenderOutput: vi.fn(),
 }));
 
-vi.mock('./execution.js', () => ({
+vi.mock('./core/execution.js', () => ({
   executeCommand: mockExecuteCommand,
 }));
 
-vi.mock('./output.js', () => ({
+vi.mock('./core/output.js', () => ({
   render: mockRenderOutput,
 }));
 

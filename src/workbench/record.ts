@@ -17,9 +17,9 @@ import * as path from 'node:path';
 import * as readline from 'node:readline';
 import chalk from 'chalk';
 import yaml from 'js-yaml';
-import { sendCommand } from './browser/daemon-client.js';
-import type { IPage } from './types.js';
-import { SEARCH_PARAMS, PAGINATION_PARAMS, FIELD_ROLES } from './constants.js';
+import { sendCommand } from '../browser/daemon-client.js';
+import type { IPage } from '../core/types.js';
+import { SEARCH_PARAMS, PAGINATION_PARAMS, FIELD_ROLES } from '../core/constants.js';
 import {
   urlToPattern,
   findArrayPath,

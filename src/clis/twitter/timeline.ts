@@ -1,5 +1,5 @@
-import { AuthRequiredError, CommandExecutionError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { AuthRequiredError, CommandExecutionError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { resolveTwitterQueryId } from './shared.js';
 
 // ── Twitter GraphQL constants ──────────────────────────────────────────

@@ -1,5 +1,5 @@
-import { CliError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { CliError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { DESC_MAX_LEN, type WikiMostReadArticle, wikiFetch } from './utils.js';
 
 cli({

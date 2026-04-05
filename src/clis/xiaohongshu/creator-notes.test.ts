@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { IPage } from '../../types.js';
-import { getRegistry } from '../../registry.js';
+import type { IPage } from '../../core/types.js';
+import { getRegistry } from '../../core/registry.js';
 import { parseCreatorNoteIdsFromHtml, parseCreatorNotesText } from './creator-notes.js';
 import './creator-notes.js';
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { BrowserBridge, generateStealthJs } from './browser/index.js';
 import { extractTabEntries, diffTabIndexes, appendLimited } from './browser/tabs.js';
-import { withTimeoutMs } from './runtime.js';
+import { withTimeoutMs } from './core/runtime.js';
 import { __test__ as cdpTest } from './browser/cdp.js';
 import { isRetryableSettleError } from './browser/page.js';
 import * as daemonClient from './browser/daemon-client.js';

@@ -10,9 +10,9 @@
  * automatically finds the minimum-privilege strategy that works.
  */
 
-import { Strategy } from './registry.js';
-import type { IPage } from './types.js';
-import { getErrorMessage } from './errors.js';
+import { Strategy } from '../core/registry.js';
+import type { IPage } from '../core/types.js';
+import { getErrorMessage } from '../core/errors.js';
 
 /** Strategy cascade order (simplest → most complex) */
 const CASCADE_ORDER: Strategy[] = [

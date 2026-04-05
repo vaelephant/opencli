@@ -5,8 +5,8 @@ import * as path from 'node:path';
 import { afterAll, describe, expect, it, vi } from 'vitest';
 
 import { wrapForEval } from '../../browser/utils.js';
-import { getRegistry } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { getRegistry } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 import { buildCoverCheckPanelTextJs } from './draft.js';
 
 // ─── Shared test helpers ────────────────────────────────────────────

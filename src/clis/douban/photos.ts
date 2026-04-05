@@ -1,4 +1,4 @@
-import { cli, Strategy } from '../../registry.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { loadDoubanSubjectPhotos, normalizeDoubanSubjectId } from './utils.js';
 
 cli({

@@ -1,7 +1,7 @@
 /**
  * YouTube search — innertube API via browser session.
  */
-import { cli, Strategy } from '../../registry.js';
+import { cli, Strategy } from '../../core/registry.js';
 
 cli({
   site: 'youtube',

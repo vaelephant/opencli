@@ -5,7 +5,7 @@
  * 用法: opencli jd search
  *       opencli jd search "显卡 A100"
  */
-import { cli, Strategy } from '../../registry.js';
+import { cli, Strategy } from '../../core/registry.js';
 
 cli({
   site: 'jd',

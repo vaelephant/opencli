@@ -6,11 +6,11 @@ import { spawn, type ChildProcess } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import * as path from 'node:path';
 import * as fs from 'node:fs';
-import type { IPage } from '../types.js';
-import type { IBrowserFactory } from '../runtime.js';
+import type { IPage } from '../core/types.js';
+import type { IBrowserFactory } from '../core/runtime.js';
 import { Page } from './page.js';
 import { isDaemonRunning, isExtensionConnected } from './daemon-client.js';
-import { DEFAULT_DAEMON_PORT } from '../constants.js';
+import { DEFAULT_DAEMON_PORT } from '../core/constants.js';
 
 const DAEMON_SPAWN_TIMEOUT = 10000; // 10s to wait for daemon + extension
 

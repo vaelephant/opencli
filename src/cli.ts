@@ -7,15 +7,15 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { type CliCommand, fullName, getRegistry, strategyLabel } from './registry.js';
-import { serializeCommand, formatArgSummary } from './serialization.js';
-import { render as renderOutput } from './output.js';
-import { getBrowserFactory, browserSession } from './runtime.js';
-import { PKG_VERSION } from './version.js';
+import { type CliCommand, fullName, getRegistry, strategyLabel } from './core/registry.js';
+import { serializeCommand, formatArgSummary } from './core/serialization.js';
+import { render as renderOutput } from './core/output.js';
+import { getBrowserFactory, browserSession } from './core/runtime.js';
+import { PKG_VERSION } from './core/version.js';
 import { printCompletionScript } from './completion.js';
 import { loadExternalClis, executeExternalCli, installExternalCli, registerExternalCli, isBinaryInstalled } from './external.js';
 import { registerAllCommands } from './commanderAdapter.js';
-import { EXIT_CODES, getErrorMessage } from './errors.js';
+import { EXIT_CODES, getErrorMessage } from './core/errors.js';
 import { daemonStatus, daemonStop, daemonRestart } from './commands/daemon.js';
 
 export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
@@ -144,7 +144,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .option('--auto', 'Enable interactive fuzzing')
     .option('--click <labels>', 'Comma-separated labels to click before fuzzing')
     .action(async (url, opts) => {
-      const { exploreUrl, renderExploreSummary } = await import('./explore.js');
+      const { exploreUrl, renderExploreSummary } = await import('./workbench/explore.js');
       const clickLabels = opts.click
         ? opts.click.split(',').map((s: string) => s.trim())
         : undefined;
@@ -167,7 +167,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .argument('<target>')
     .option('--top <n>', '', '3')
     .action(async (target, opts) => {
-      const { synthesizeFromExplore, renderSynthesizeSummary } = await import('./synthesize.js');
+      const { synthesizeFromExplore, renderSynthesizeSummary } = await import('./workbench/synthesize.js');
       console.log(renderSynthesizeSummary(synthesizeFromExplore(target, { top: parseInt(opts.top) })));
     });
 
@@ -178,7 +178,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .option('--goal <text>')
     .option('--site <name>')
     .action(async (url, opts) => {
-      const { generateCliFromUrl, renderGenerateSummary } = await import('./generate.js');
+      const { generateCliFromUrl, renderGenerateSummary } = await import('./workbench/generate.js');
       const workspace = `generate:${inferHost(url, opts.site)}`;
       const r = await generateCliFromUrl({
         url,
@@ -202,7 +202,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .option('--poll <ms>', 'Poll interval in milliseconds', '2000')
     .option('--timeout <ms>', 'Auto-stop after N milliseconds (default: 60000)', '60000')
     .action(async (url, opts) => {
-      const { recordSession, renderRecordSummary } = await import('./record.js');
+      const { recordSession, renderRecordSummary } = await import('./workbench/record.js');
       const result = await recordSession({
         BrowserFactory: getBrowserFactory(),
         url,
@@ -221,7 +221,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .argument('<url>')
     .option('--site <name>')
     .action(async (url, opts) => {
-      const { cascadeProbe, renderCascadeResult } = await import('./cascade.js');
+      const { cascadeProbe, renderCascadeResult } = await import('./workbench/cascade.js');
       const workspace = `cascade:${inferHost(url, opts.site)}`;
       const result = await browserSession(getBrowserFactory(), async (page) => {
         try {
@@ -265,7 +265,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
     .argument('<source>', 'Plugin source (e.g. github:user/repo)')
     .action(async (source: string) => {
       const { installPlugin } = await import('./plugin.js');
-      const { discoverPlugins } = await import('./discovery.js');
+      const { discoverPlugins } = await import('./core/discovery.js');
       try {
         const result = installPlugin(source);
         await discoverPlugins();
@@ -317,7 +317,7 @@ export function runCli(BUILTIN_CLIS: string, USER_CLIS: string): void {
       }
 
       const { updatePlugin, updateAllPlugins } = await import('./plugin.js');
-      const { discoverPlugins } = await import('./discovery.js');
+      const { discoverPlugins } = await import('./core/discovery.js');
       if (opts.all) {
         const results = updateAllPlugins();
         if (results.length > 0) {

@@ -1,7 +1,7 @@
-import { BrowserBridge, CDPBridge } from './browser/index.js';
+import { BrowserBridge, CDPBridge } from '../browser/index.js';
 import type { IPage } from './types.js';
 import { TimeoutError } from './errors.js';
-import { isElectronApp } from './electron-apps.js';
+import { isElectronApp } from '../electron-apps.js';
 import { log } from './logger.js';
 
 const FLOW_SRC = 'runtime.ts';

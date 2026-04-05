@@ -2,12 +2,12 @@
  * Pipeline step: fetch — HTTP API requests.
  */
 
-import { CliError, getErrorMessage } from '../../errors.js';
-import { log } from '../../logger.js';
-import type { IPage } from '../../types.js';
+import { CliError, getErrorMessage } from '../../core/errors.js';
+import { log } from '../../core/logger.js';
+import type { IPage } from '../../core/types.js';
 import { render } from '../template.js';
 
-import { isRecord, mapConcurrent } from '../../utils.js';
+import { isRecord, mapConcurrent } from '../../core/utils.js';
 
 
 

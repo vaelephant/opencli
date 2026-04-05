@@ -15,7 +15,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import yaml from 'js-yaml';
-import { VOLATILE_PARAMS, SEARCH_PARAMS, LIMIT_PARAMS, PAGINATION_PARAMS } from './constants.js';
+import { VOLATILE_PARAMS, SEARCH_PARAMS, LIMIT_PARAMS, PAGINATION_PARAMS } from '../core/constants.js';
 import type { ExploreAuthSummary, ExploreEndpointArtifact, ExploreManifest } from './explore.js';
 
 /** 与 `constants` 中同名集合一致，便于本文件内阅读 */

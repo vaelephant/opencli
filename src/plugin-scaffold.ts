@@ -14,7 +14,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { PKG_VERSION } from './version.js';
+import { PKG_VERSION } from './core/version.js';
 
 export interface ScaffoldOptions {
   /** Directory to create the plugin in. Defaults to `./<name>` */

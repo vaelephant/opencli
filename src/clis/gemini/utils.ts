@@ -1,4 +1,4 @@
-import type { IPage } from '../../types.js';
+import type { IPage } from '../../core/types.js';
 
 export const GEMINI_DOMAIN = 'gemini.google.com';
 export const GEMINI_APP_URL = 'https://gemini.google.com/app';

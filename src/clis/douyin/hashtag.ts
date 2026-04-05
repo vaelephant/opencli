@@ -1,6 +1,6 @@
-import { cli, Strategy } from '../../registry.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { browserFetch } from './_shared/browser-fetch.js';
-import { ArgumentError } from '../../errors.js';
+import { ArgumentError } from '../../core/errors.js';
 
 cli({
   site: 'douyin',

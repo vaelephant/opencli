@@ -6,7 +6,7 @@ import {
   generateFullCaptureInterceptorJs,
   generateRecordedCandidates,
 } from './record.js';
-import { render } from './pipeline/template.js';
+import { render } from '../pipeline/template.js';
 
 describe('record request-body capture', () => {
   it('captures a JSON fetch request body alongside the JSON response body', () => {

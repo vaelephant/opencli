@@ -8,9 +8,9 @@
  *   opencli toutiao publish --draft --title "标题" "正文内容"
  */
 
-import { cli, Strategy } from '../../registry.js';
-import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 
 // The creator center is hosted on mp.toutiao.com. The exact publish path can change,
 // so we try a few known candidates before falling back to the homepage.

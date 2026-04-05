@@ -2,10 +2,10 @@
  * Pipeline steps: data transforms — select, map, filter, sort, limit.
  */
 
-import type { IPage } from '../../types.js';
+import type { IPage } from '../../core/types.js';
 import { render, evalExpr } from '../template.js';
 
-import { isRecord } from '../../utils.js';
+import { isRecord } from '../../core/utils.js';
 
 export async function stepSelect(_page: IPage | null, params: unknown, data: unknown, args: Record<string, unknown>): Promise<unknown> {
   const pathStr = String(render(params, { args, data }));

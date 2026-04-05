@@ -1,5 +1,5 @@
-import { ArgumentError, EmptyResultError } from '../../errors.js';
-import { cli, Strategy, type CommandArgs } from '../../registry.js';
+import { ArgumentError, EmptyResultError } from '../../core/errors.js';
+import { cli, Strategy, type CommandArgs } from '../../core/registry.js';
 import { buildTiebaSearchItems, type RawTiebaSearchItem, normalizeTiebaLimit } from './utils.js';
 
 const MAX_SUPPORTED_PAGE = '1';

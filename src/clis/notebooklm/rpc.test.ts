@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import { AuthRequiredError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { AuthRequiredError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 import {
   buildNotebooklmRpcBody,
   extractNotebooklmRpcResult,

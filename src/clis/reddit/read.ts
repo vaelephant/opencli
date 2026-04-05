@@ -6,8 +6,8 @@
  * - Configurable depth and replies-per-level
  * - Indented output showing conversation threads
  */
-import { cli, Strategy } from '../../registry.js';
-import { CommandExecutionError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { CommandExecutionError } from '../../core/errors.js';
 
 cli({
   site: 'reddit',

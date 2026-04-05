@@ -8,9 +8,9 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { cli, Strategy } from '../../registry.js';
-import { ArgumentError, CommandExecutionError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { ArgumentError, CommandExecutionError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 
 const VISIBILITY_LABELS: Record<string, string> = {
   public: '公开',

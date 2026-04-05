@@ -6,8 +6,8 @@
  * the --with-replies flag.
  */
 
-import { cli, Strategy } from '../../registry.js';
-import { AuthRequiredError, EmptyResultError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { AuthRequiredError, EmptyResultError } from '../../core/errors.js';
 import { parseNoteId, buildNoteUrl } from './note-helpers.js';
 
 function parseCommentLimit(raw: unknown, fallback = 20): number {

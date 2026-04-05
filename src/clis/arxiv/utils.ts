@@ -5,7 +5,7 @@
  * https://info.arxiv.org/help/api/index.html
  */
 
-import { CliError } from '../../errors.js';
+import { CliError } from '../../core/errors.js';
 
 export const ARXIV_BASE = 'https://export.arxiv.org/api/query';
 

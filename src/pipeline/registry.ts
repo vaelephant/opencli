@@ -11,7 +11,7 @@
  * 相关文件：`executor.ts`（调度）、`steps/*.ts`（各步实现）。
  */
 
-import type { IPage } from '../types.js';
+import type { IPage } from '../core/types.js';
 
 import { stepNavigate, stepClick, stepType, stepWait, stepPress, stepSnapshot, stepEvaluate } from './steps/browser.js';
 import { stepFetch } from './steps/fetch.js';

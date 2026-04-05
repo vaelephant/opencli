@@ -13,18 +13,18 @@
 import { type CliCommand, type InternalCliCommand, type Arg, type CommandArgs, Strategy, getRegistry, fullName, strategyLabel } from './registry.js';
 import type { IPage } from './types.js';
 import { pathToFileURL } from 'node:url';
-import { executePipeline } from './pipeline/index.js';
+import { executePipeline } from '../pipeline/index.js';
 import { AdapterLoadError, ArgumentError, BrowserConnectError, CommandExecutionError, getErrorMessage } from './errors.js';
 import { shouldUseBrowserSession } from './capabilityRouting.js';
 import { getBrowserFactory, browserSession, runWithTimeout, DEFAULT_BROWSER_COMMAND_TIMEOUT } from './runtime.js';
 import { emitHook, type HookContext } from './hooks.js';
-import { checkDaemonStatus } from './browser/discover.js';
+import { checkDaemonStatus } from '../browser/discover.js';
 import { log } from './logger.js';
-import { isElectronApp } from './electron-apps.js';
+import { isElectronApp } from '../electron-apps.js';
 
 /** Label for `[flow]` lines so traces map to this module */
 const FLOW_SRC = 'execution.ts';
-import { resolveElectronEndpoint } from './launcher.js';
+import { resolveElectronEndpoint } from '../launcher.js';
 
 const _loadedModules = new Set<string>();
 

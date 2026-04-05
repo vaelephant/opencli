@@ -14,8 +14,8 @@ import { request as httpRequest } from 'node:http';
 import type { ElectronAppEntry } from './electron-apps.js';
 import { getElectronApp } from './electron-apps.js';
 import { confirmPrompt } from './tui.js';
-import { CommandExecutionError } from './errors.js';
-import { log } from './logger.js';
+import { CommandExecutionError } from './core/errors.js';
+import { log } from './core/logger.js';
 
 const POLL_INTERVAL_MS = 500;
 const POLL_TIMEOUT_MS = 15_000;

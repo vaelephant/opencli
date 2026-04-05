@@ -3,9 +3,9 @@
  *
  * Navigates to the 36kr search results page and scrapes rendered articles.
  */
-import { cli, Strategy } from '../../registry.js';
-import { CliError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { CliError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 
 cli({
   site: '36kr',

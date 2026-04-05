@@ -10,10 +10,10 @@
  * （命令名也支持别名 weittoutiao，与旧拼写兼容）
  */
 
-import { cli, Strategy } from '../../registry.js';
-import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../errors.js';
-import type { IPage } from '../../types.js';
-import { log } from '../../logger.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
+import { log } from '../../core/logger.js';
 
 const FLOW_SRC = 'weittoutiao.ts';
 

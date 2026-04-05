@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 import { GEMINI_DOMAIN, getGeminiTranscriptLines, sendGeminiMessage, startNewGeminiChat, waitForGeminiResponse } from './utils.js';
 
 function normalizeBooleanFlag(value: unknown): boolean {

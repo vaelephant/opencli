@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import { CliError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { CliError } from '../../core/errors.js';
 import { gotoOnesHome, onesFetchInPage } from './common.js';
 import { enrichPeekEntriesWithDetails } from './enrich-tasks.js';
 import { resolveTaskListLabels } from './resolve-labels.js';

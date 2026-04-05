@@ -24,11 +24,11 @@ import { pipeline } from 'node:stream/promises';
 import { URL } from 'node:url';
 import type { ProgressBar } from './progress.js';
 import { isBinaryInstalled } from '../external.js';
-import type { BrowserCookie } from '../types.js';
-import { getErrorMessage } from '../errors.js';
-import { fetchWithNodeNetwork } from '../node-network.js';
+import type { BrowserCookie } from '../core/types.js';
+import { getErrorMessage } from '../core/errors.js';
+import { fetchWithNodeNetwork } from '../core/node-network.js';
 
-export type { BrowserCookie } from '../types.js';
+export type { BrowserCookie } from '../core/types.js';
 
 /** `httpDownload` 的选项：Cookie/头、超时、进度、重定向上限 */
 export interface DownloadOptions {

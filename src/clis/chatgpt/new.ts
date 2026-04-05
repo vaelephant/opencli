@@ -1,7 +1,7 @@
 import { execSync } from 'node:child_process';
-import { cli, Strategy } from '../../registry.js';
-import { ConfigError, getErrorMessage } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { ConfigError, getErrorMessage } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 
 export const newCommand = cli({
   site: 'chatgpt',

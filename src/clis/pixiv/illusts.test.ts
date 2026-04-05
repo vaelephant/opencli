@@ -1,7 +1,7 @@
 import { beforeAll, describe, expect, it } from 'vitest';
-import type { CliCommand } from '../../registry.js';
-import { getRegistry } from '../../registry.js';
-import { AuthRequiredError, CommandExecutionError } from '../../errors.js';
+import type { CliCommand } from '../../core/registry.js';
+import { getRegistry } from '../../core/registry.js';
+import { AuthRequiredError, CommandExecutionError } from '../../core/errors.js';
 import { createPageMock } from './test-utils.js';
 import './illusts.js';
 

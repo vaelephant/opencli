@@ -3,11 +3,11 @@
  */
 
 
-import type { IPage } from '../types.js';
+import type { IPage } from '../core/types.js';
 import { getStep, type StepHandler } from './registry.js';
-import { log } from '../logger.js';
-import { ConfigError } from '../errors.js';
-import { BROWSER_ONLY_STEPS } from '../capabilityRouting.js';
+import { log } from '../core/logger.js';
+import { ConfigError } from '../core/errors.js';
+import { BROWSER_ONLY_STEPS } from '../core/capabilityRouting.js';
 import { isTransientBrowserError } from '../browser/errors.js';
 
 export interface PipelineContext {

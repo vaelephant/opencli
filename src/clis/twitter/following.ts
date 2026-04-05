@@ -1,5 +1,5 @@
-import { AuthRequiredError, SelectorError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { AuthRequiredError, SelectorError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 
 cli({
   site: 'twitter',

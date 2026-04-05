@@ -1,4 +1,4 @@
-import { cli, Strategy } from '../../registry.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { fetchWebApi, WEREAD_UA, WEREAD_WEB_ORIGIN } from './utils.js';
 
 interface SearchHtmlEntry {

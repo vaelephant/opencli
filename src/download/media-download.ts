@@ -9,7 +9,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { getErrorMessage } from '../errors.js';
+import { getErrorMessage } from '../core/errors.js';
 import {
   httpDownload,
   ytdlpDownload,
@@ -17,7 +17,7 @@ import {
   getTempDir,
   exportCookiesToNetscape,
 } from './index.js';
-import type { BrowserCookie } from '../types.js';
+import type { BrowserCookie } from '../core/types.js';
 import { DownloadProgressTracker, formatBytes } from './progress.js';
 
 // ============================================================

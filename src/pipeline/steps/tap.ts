@@ -9,7 +9,7 @@
  * 5. Returns the captured data (optionally sub-selected)
  */
 
-import type { IPage } from '../../types.js';
+import type { IPage } from '../../core/types.js';
 import { render } from '../template.js';
 import { generateTapInterceptorJs } from '../../interceptor.js';
 

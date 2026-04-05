@@ -1,7 +1,7 @@
 /**
  * Yahoo Finance stock quote — multi-strategy API fallback.
  */
-import { cli, Strategy } from '../../registry.js';
+import { cli, Strategy } from '../../core/registry.js';
 
 cli({
   site: 'yahoo-finance',

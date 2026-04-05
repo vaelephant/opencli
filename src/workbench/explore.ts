@@ -8,14 +8,14 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { DEFAULT_BROWSER_EXPLORE_TIMEOUT, browserSession, runWithTimeout } from './runtime.js';
-import type { IBrowserFactory } from './runtime.js';
-import { LIMIT_PARAMS } from './constants.js';
-import { detectFramework } from './scripts/framework.js';
-import { discoverStores } from './scripts/store.js';
-import { interactFuzz } from './scripts/interact.js';
-import type { IPage } from './types.js';
-import { log } from './logger.js';
+import { DEFAULT_BROWSER_EXPLORE_TIMEOUT, browserSession, runWithTimeout } from '../core/runtime.js';
+import type { IBrowserFactory } from '../core/runtime.js';
+import { LIMIT_PARAMS } from '../core/constants.js';
+import { detectFramework } from '../scripts/framework.js';
+import { discoverStores } from '../scripts/store.js';
+import { interactFuzz } from '../scripts/interact.js';
+import type { IPage } from '../core/types.js';
+import { log } from '../core/logger.js';
 import {
   urlToPattern,
   findArrayPath,

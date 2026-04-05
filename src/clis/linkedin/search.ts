@@ -1,6 +1,6 @@
-import { cli, Strategy } from '../../registry.js';
-import type { IPage } from '../../types.js';
-import { ArgumentError, CommandExecutionError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
+import { ArgumentError, CommandExecutionError } from '../../core/errors.js';
 
 // ── Filter value mappings ──────────────────────────────────────────────
 

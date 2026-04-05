@@ -8,7 +8,7 @@
  * 4. Collapse: single-child containers
  */
 
-import type { SnapshotOptions } from './types.js';
+import type { SnapshotOptions } from './core/types.js';
 
 const DEFAULT_MAX_TEXT_LENGTH = 200;
 

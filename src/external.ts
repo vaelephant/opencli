@@ -20,8 +20,8 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync, execFileSync } from 'node:child_process';
 import yaml from 'js-yaml';
 import chalk from 'chalk';
-import { log } from './logger.js';
-import { EXIT_CODES, getErrorMessage } from './errors.js';
+import { log } from './core/logger.js';
+import { EXIT_CODES, getErrorMessage } from './core/errors.js';
 
 /** 当前模块所在目录（ESM 无 CommonJS 的 __dirname） */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));

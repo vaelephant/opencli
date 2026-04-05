@@ -4,8 +4,8 @@ import * as path from 'node:path';
 
 import { describe, expect, it, vi } from 'vitest';
 
-import { getRegistry } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { getRegistry } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 import './publish.js';
 
 function createPageMock(evaluateResults: any[], overrides: Partial<IPage> = {}): IPage {

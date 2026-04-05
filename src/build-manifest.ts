@@ -13,8 +13,8 @@ import * as fs from 'node:fs';
 import * as path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import yaml from 'js-yaml';
-import { getErrorMessage } from './errors.js';
-import { fullName, getRegistry, type CliCommand } from './registry.js';
+import { getErrorMessage } from './core/errors.js';
+import { fullName, getRegistry, type CliCommand } from './core/registry.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const CLIS_DIR = path.resolve(__dirname, 'clis');
@@ -50,9 +50,9 @@ export interface ManifestEntry {
   navigateBefore?: boolean | string;
 }
 
-import { type YamlCliDefinition, parseYamlArgs } from './yaml-schema.js';
+import { type YamlCliDefinition, parseYamlArgs } from './core/yaml-schema.js';
 
-import { isRecord } from './utils.js';
+import { isRecord } from './core/utils.js';
 
 const CLI_MODULE_PATTERN = /\bcli\s*\(/;
 

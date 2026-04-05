@@ -1,5 +1,5 @@
-import { ArgumentError, CommandExecutionError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { ArgumentError, CommandExecutionError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 
 export const SITE = 'amazon';
 export const DOMAIN = 'amazon.com';

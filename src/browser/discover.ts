@@ -2,7 +2,7 @@
  * Daemon discovery — checks if the daemon is running.
  */
 
-import { DEFAULT_DAEMON_PORT } from '../constants.js';
+import { DEFAULT_DAEMON_PORT } from '../core/constants.js';
 import { isDaemonRunning } from './daemon-client.js';
 
 export { isDaemonRunning };

@@ -15,7 +15,7 @@
   },
   "exports": {
     ".": "./dist/main.js",
-    "./registry": "./dist/registry-api.js"
+    "./registry": "./dist/core/registry-api.js"
   },
   "scripts": {
     "dev": "tsx src/main.ts",

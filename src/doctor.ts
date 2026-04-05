@@ -5,11 +5,11 @@
  */
 
 import chalk from 'chalk';
-import { DEFAULT_DAEMON_PORT } from './constants.js';
+import { DEFAULT_DAEMON_PORT } from './core/constants.js';
 import { checkDaemonStatus } from './browser/discover.js';
 import { BrowserBridge } from './browser/index.js';
 import { listSessions } from './browser/daemon-client.js';
-import { getErrorMessage } from './errors.js';
+import { getErrorMessage } from './core/errors.js';
 import { getRuntimeLabel } from './runtime-detect.js';
 
 export type DoctorOptions = {

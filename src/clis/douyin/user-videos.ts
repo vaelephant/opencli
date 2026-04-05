@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 import { fetchDouyinComments, fetchDouyinUserVideos, type DouyinVideo } from './_shared/public-api.js';
 
 export const MAX_USER_VIDEOS_LIMIT = 20;

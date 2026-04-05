@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getRegistry } from '../../registry.js';
-import { log } from '../../logger.js';
+import { getRegistry } from '../../core/registry.js';
+import { log } from '../../core/logger.js';
 import { fetchPrivateApi } from './utils.js';
 import './shelf.js';
 

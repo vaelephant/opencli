@@ -12,9 +12,9 @@
 import * as fs from 'node:fs';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../errors.js';
-import { cli, Strategy, type Arg, type CommandArgs } from '../../registry.js';
-import type { IPage } from '../../types.js';
+import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../core/errors.js';
+import { cli, Strategy, type Arg, type CommandArgs } from '../../core/registry.js';
+import type { IPage } from '../../core/types.js';
 
 const LINUX_DO_HOME = 'https://linux.do';
 const LINUX_DO_METADATA_TTL_MS = 24 * 60 * 60 * 1000;

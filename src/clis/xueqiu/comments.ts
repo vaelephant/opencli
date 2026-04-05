@@ -1,8 +1,8 @@
-import type { IPage } from '../../types.js';
-import { cli, Strategy } from '../../registry.js';
-import { ArgumentError, AuthRequiredError, CommandExecutionError, EmptyResultError } from '../../errors.js';
-import { log } from '../../logger.js';
-import { isRecord } from '../../utils.js';
+import type { IPage } from '../../core/types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { ArgumentError, AuthRequiredError, CommandExecutionError, EmptyResultError } from '../../core/errors.js';
+import { log } from '../../core/logger.js';
+import { isRecord } from '../../core/utils.js';
 
 /**
  * Minimal browser-response shape used by the classifier.

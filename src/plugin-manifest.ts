@@ -8,7 +8,7 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { PKG_VERSION } from './version.js';
+import { PKG_VERSION } from './core/version.js';
 
 // ── Types ───────────────────────────────────────────────────────────────────
 

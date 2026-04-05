@@ -4,8 +4,8 @@
 
 import { describe, it, expect, vi } from 'vitest';
 import { executePipeline } from './index.js';
-import { ConfigError } from '../errors.js';
-import type { IPage } from '../types.js';
+import { ConfigError } from '../core/errors.js';
+import type { IPage } from '../core/types.js';
 
 /** Create a minimal mock page for testing */
 function createMockPage(overrides: Partial<IPage> = {}): IPage {

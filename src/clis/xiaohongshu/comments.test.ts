@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
-import type { IPage } from '../../types.js';
-import { getRegistry } from '../../registry.js';
+import type { IPage } from '../../core/types.js';
+import { getRegistry } from '../../core/registry.js';
 import './comments.js';
 
 function createPageMock(evaluateResult: any): IPage {

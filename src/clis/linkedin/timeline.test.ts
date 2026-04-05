@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { getRegistry } from '../../registry.js';
+import { getRegistry } from '../../core/registry.js';
 import './timeline.js';
 
 const { parseMetric, buildPostId, mergeTimelinePosts } = await import('./timeline.js').then(

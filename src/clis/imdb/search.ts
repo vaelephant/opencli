@@ -1,5 +1,5 @@
-import { ArgumentError, CommandExecutionError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { ArgumentError, CommandExecutionError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 import {
   forceEnglishUrl,
   isChallengePage,

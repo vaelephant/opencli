@@ -9,7 +9,7 @@
  */
 
 import { exploreUrl } from './explore.js';
-import type { IBrowserFactory } from './runtime.js';
+import type { IBrowserFactory } from '../core/runtime.js';
 import { synthesizeFromExplore, type SynthesizeCandidateSummary, type SynthesizeResult } from './synthesize.js';
 
 export interface GenerateCliOptions {

@@ -6,8 +6,8 @@
  *  - Dynamic completion logic that returns candidates for the current cursor position
  */
 
-import { getRegistry } from './registry.js';
-import { CliError } from './errors.js';
+import { getRegistry } from './core/registry.js';
+import { CliError } from './core/errors.js';
 
 // ── Dynamic completion logic ───────────────────────────────────────────────
 

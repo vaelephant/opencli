@@ -23,7 +23,7 @@ vi.mock('./utils.js', async () => {
   };
 });
 
-import { getRegistry } from '../../registry.js';
+import { getRegistry } from '../../core/registry.js';
 import './source-get.js';
 
 describe('notebooklm source-get', () => {

@@ -3,9 +3,9 @@
  *
  * Fetches the full content of a 36kr article given its ID or URL.
  */
-import { cli, Strategy } from '../../registry.js';
-import { CliError } from '../../errors.js';
-import type { IPage } from '../../types.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { CliError } from '../../core/errors.js';
+import type { IPage } from '../../core/types.js';
 
 /** Extract article ID from a full URL or a bare numeric ID string */
 function parseArticleId(input: string): string {

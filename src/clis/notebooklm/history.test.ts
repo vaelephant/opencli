@@ -20,7 +20,7 @@ vi.mock('./utils.js', async () => {
   };
 });
 
-import { getRegistry } from '../../registry.js';
+import { getRegistry } from '../../core/registry.js';
 import './history.js';
 
 describe('notebooklm history', () => {

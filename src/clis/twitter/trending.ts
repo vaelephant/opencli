@@ -1,5 +1,5 @@
-import { cli, Strategy } from '../../registry.js';
-import { AuthRequiredError, EmptyResultError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { AuthRequiredError, EmptyResultError } from '../../core/errors.js';
 
 // ── CLI definition ────────────────────────────────────────────────────
 

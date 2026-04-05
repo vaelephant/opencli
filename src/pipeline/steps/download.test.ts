@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import type { IPage } from '../../types.js';
+import type { IPage } from '../../core/types.js';
 
 const { mockHttpDownload, mockYtdlpDownload, mockExportCookiesToNetscape } = vi.hoisted(() => ({
   mockHttpDownload: vi.fn(),

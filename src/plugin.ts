@@ -12,9 +12,9 @@ import * as os from 'node:os';
 import * as path from 'node:path';
 import { execSync, execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
-import { PLUGINS_DIR } from './discovery.js';
-import { getErrorMessage } from './errors.js';
-import { log } from './logger.js';
+import { PLUGINS_DIR } from './core/discovery.js';
+import { getErrorMessage } from './core/errors.js';
+import { log } from './core/logger.js';
 import {
   readPluginManifest,
   isMonorepo,

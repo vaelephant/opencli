@@ -1,5 +1,5 @@
-import { CliError } from '../../errors.js';
-import { cli, Strategy } from '../../registry.js';
+import { CliError } from '../../core/errors.js';
+import { cli, Strategy } from '../../core/registry.js';
 import { wikiFetch } from './utils.js';
 
 interface WikiSearchResult {

@@ -12,10 +12,10 @@
 
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { type CliCommand, fullName, getRegistry } from './registry.js';
-import { formatRegistryHelpText } from './serialization.js';
-import { render as renderOutput } from './output.js';
-import { executeCommand } from './execution.js';
+import { type CliCommand, fullName, getRegistry } from './core/registry.js';
+import { formatRegistryHelpText } from './core/serialization.js';
+import { render as renderOutput } from './core/output.js';
+import { executeCommand } from './core/execution.js';
 import {
   CliError,
   EXIT_CODES,
@@ -29,7 +29,7 @@ import {
   ArgumentError,
   AdapterLoadError,
   CommandExecutionError,
-} from './errors.js';
+} from './core/errors.js';
 import { checkDaemonStatus } from './browser/discover.js';
 
 export function normalizeArgValue(argType: string | undefined, value: unknown, name: string): unknown {

@@ -6,8 +6,8 @@
  * Ref: https://github.com/jackwener/opencli/issues/10
  */
 
-import { cli, Strategy } from '../../registry.js';
-import { AuthRequiredError } from '../../errors.js';
+import { cli, Strategy } from '../../core/registry.js';
+import { AuthRequiredError } from '../../core/errors.js';
 
 /**
  * Extract approximate publish date from a Xiaohongshu note URL.

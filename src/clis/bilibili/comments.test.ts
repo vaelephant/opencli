@@ -8,7 +8,7 @@ vi.mock('./utils.js', () => ({
   apiGet: mockApiGet,
 }));
 
-import { getRegistry } from '../../registry.js';
+import { getRegistry } from '../../core/registry.js';
 import './comments.js';
 
 describe('bilibili comments', () => {

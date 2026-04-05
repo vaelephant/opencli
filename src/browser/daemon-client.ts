@@ -4,9 +4,9 @@
  * Provides a typed send() function that posts a Command and returns a Result.
  */
 
-import { DEFAULT_DAEMON_PORT } from '../constants.js';
-import type { BrowserSessionInfo } from '../types.js';
-import { sleep } from '../utils.js';
+import { DEFAULT_DAEMON_PORT } from '../core/constants.js';
+import type { BrowserSessionInfo } from '../core/types.js';
+import { sleep } from '../core/utils.js';
 import { isTransientBrowserError } from './errors.js';
 
 const DAEMON_PORT = parseInt(process.env.OPENCLI_DAEMON_PORT ?? String(DEFAULT_DAEMON_PORT), 10);
