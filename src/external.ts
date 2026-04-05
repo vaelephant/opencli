@@ -1,3 +1,18 @@
+/**
+ * 外部 CLI（External CLI）注册与执行。
+ *
+ * opencli 可以把「本仓库未内置」的第三方命令行工具当作扩展：在 YAML 里登记名称、
+ * 实际二进制名、以及各平台一键安装命令。典型用法：`opencli external run <name> -- ...`
+ * 或插件子命令转发到 gh、ffmpeg 等。
+ *
+ * 配置来源（后者覆盖同名前者）：
+ * 1. 打包内置：`dist/external-clis.yaml`（随编译从 `src/external-clis.yaml` 复制）
+ * 2. 用户目录：`~/.opencli/external-clis.yaml`
+ *
+ * 安全说明：自动安装命令经 `parseCommand` 解析后用 `execFileSync` 执行，禁止 shell 元字符，
+ * 避免 `rm -rf` 一类注入；透传执行使用 `spawnSync` 继承 stdio。
+ */
+
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
@@ -8,17 +23,23 @@ import chalk from 'chalk';
 import { log } from './logger.js';
 import { EXIT_CODES, getErrorMessage } from './errors.js';
 
+/** 当前模块所在目录（ESM 无 CommonJS 的 __dirname） */
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+/** 各操作系统下一键安装命令（字符串，经 parseCommand 解析，不可含 shell 管道等） */
 export interface ExternalCliInstall {
   mac?: string;
   linux?: string;
   windows?: string;
+  /** 未匹配到 mac/linux/windows 时使用 */
   default?: string;
 }
 
+/** 单条外部 CLI 登记项 */
 export interface ExternalCliConfig {
+  /** 在 opencli 里使用的逻辑名 */
   name: string;
+  /** PATH 上可执行文件名（如 gh、ffmpeg） */
   binary: string;
   description?: string;
   homepage?: string;
@@ -26,18 +47,24 @@ export interface ExternalCliConfig {
   install?: ExternalCliInstall;
 }
 
+/** 用户级注册表路径：~/.opencli/external-clis.yaml */
 function getUserRegistryPath(): string {
   const home = os.homedir();
   return path.join(home, '.opencli', 'external-clis.yaml');
 }
 
+/** 内存缓存，避免重复读盘；`registerExternalCli` 写入后会置空以失效 */
 let _cachedExternalClis: ExternalCliConfig[] | null = null;
 
+/**
+ * 合并内置 + 用户 YAML，按 name 去重（用户覆盖同名内置），排序后返回。
+ * 解析失败仅打 warn，不抛错。
+ */
 export function loadExternalClis(): ExternalCliConfig[] {
   if (_cachedExternalClis) return _cachedExternalClis;
   const configs = new Map<string, ExternalCliConfig>();
 
-  // 1. Load built-in
+  // 1. 内置清单
   const builtinPath = path.resolve(__dirname, 'external-clis.yaml');
   try {
     if (fs.existsSync(builtinPath)) {
@@ -49,14 +76,14 @@ export function loadExternalClis(): ExternalCliConfig[] {
     log.warn(`Failed to parse built-in external-clis.yaml: ${getErrorMessage(err)}`);
   }
 
-  // 2. Load user custom
+  // 2. 用户自定义（同名覆盖内置）
   const userPath = getUserRegistryPath();
   try {
     if (fs.existsSync(userPath)) {
       const raw = fs.readFileSync(userPath, 'utf8');
       const parsed = (yaml.load(raw) || []) as ExternalCliConfig[];
       for (const item of parsed) {
-        configs.set(item.name, item); // Overwrite built-in if duplicated
+        configs.set(item.name, item);
       }
     }
   } catch (err) {
@@ -67,6 +94,9 @@ export function loadExternalClis(): ExternalCliConfig[] {
   return _cachedExternalClis;
 }
 
+/**
+ * 判断 PATH 上是否存在该可执行文件（Windows 用 `where`，其它平台用 `which`）。
+ */
 export function isBinaryInstalled(binary: string): boolean {
   try {
     const isWindows = os.platform() === 'win32';
@@ -77,6 +107,9 @@ export function isBinaryInstalled(binary: string): boolean {
   }
 }
 
+/**
+ * 按当前操作系统从 install 配置里取出一条安装命令字符串；无则返回 null。
+ */
 export function getInstallCmd(installConfig?: ExternalCliInstall): string | null {
   if (!installConfig) return null;
   const platform = os.platform();
@@ -88,15 +121,14 @@ export function getInstallCmd(installConfig?: ExternalCliInstall): string | null
 }
 
 /**
- * Safely parses a command string into a binary and argument list.
- * Rejects commands containing shell operators (&&, ||, |, ;, >, <, `) that
- * cannot be safely expressed as execFileSync arguments.
+ * 将 YAML 里的一行安装命令安全解析为「可执行文件路径 + 参数数组」，供 execFileSync 使用。
  *
- * Args:
- *   cmd: Raw command string from YAML config (e.g. "brew install gh")
+ * - 拒绝包含 shell 运算符（`&&`、`||`、`|`、`;`、重定向、反引子、`$()` 等）的字符串，
+ *   无法安全拆成 argv 时直接抛错，要求用户手动安装。
+ * - 支持简单引号分段，不做变量展开。
  *
- * Returns:
- *   Object with `binary` and `args` fields, or throws on unsafe input.
+ * @param cmd — 例如 `"brew install gh"`
+ * @returns `{ binary, args }`，非法输入则抛 Error
  */
 export function parseCommand(cmd: string): { binary: string; args: string[] } {
   const shellOperators = /&&|\|\|?|;|[><`$#\n\r]|\$\(/;
@@ -107,7 +139,7 @@ export function parseCommand(cmd: string): { binary: string; args: string[] } {
     );
   }
 
-  // Tokenise respecting single- and double-quoted segments (no variable expansion).
+  // 按空格切分，保留单/双引号内整段（无变量展开）
   const tokens: string[] = [];
   const re = /(?:"([^"]*)")|(?:'([^']*)')|(\S+)/g;
   let match: RegExpExecArray | null;
@@ -123,11 +155,13 @@ export function parseCommand(cmd: string): { binary: string; args: string[] } {
   return { binary, args };
 }
 
+/** Windows 下无扩展名且 ENOENT 时，再尝试 `binary.cmd`（npm 全局 shim） */
 function shouldRetryWithCmdShim(binary: string, err: unknown): boolean {
   const code = err instanceof Error ? (err as NodeJS.ErrnoException).code : undefined;
   return os.platform() === 'win32' && !path.extname(binary) && code === 'ENOENT';
 }
 
+/** 解析并执行安装命令；继承 stdio 便于用户看到 brew/apt 等输出 */
 function runInstallCommand(cmd: string): void {
   const { binary, args } = parseCommand(cmd);
 
@@ -142,6 +176,9 @@ function runInstallCommand(cmd: string): void {
   }
 }
 
+/**
+ * 若配置了 install 且当前平台有对应命令，则执行自动安装；成功返回 true。
+ */
 export function installExternalCli(cli: ExternalCliConfig): boolean {
   if (!cli.install) {
     console.error(chalk.red(`No auto-install command configured for '${cli.name}'.`));
@@ -168,6 +205,10 @@ export function installExternalCli(cli: ExternalCliConfig): boolean {
   }
 }
 
+/**
+ * 按注册名找到配置 → 若二进制未安装则尝试自动安装 → 否则 `spawnSync` 透传 args。
+ * 子进程继承 stdin/stdout/stderr；退出码写回 `process.exitCode`。
+ */
 export function executeExternalCli(name: string, args: string[], preloaded?: ExternalCliConfig[]): void {
   const configs = preloaded ?? loadExternalClis();
   const cli = configs.find((c) => c.name === name);
@@ -175,9 +216,7 @@ export function executeExternalCli(name: string, args: string[], preloaded?: Ext
     throw new Error(`External CLI '${name}' not found in registry.`);
   }
 
-  // 1. Check if installed
   if (!isBinaryInstalled(cli.binary)) {
-    // 2. Try to auto install
     const success = installExternalCli(cli);
     if (!success) {
       process.exitCode = EXIT_CODES.SERVICE_UNAVAIL;
@@ -185,25 +224,30 @@ export function executeExternalCli(name: string, args: string[], preloaded?: Ext
     }
   }
 
-  // 3. Passthrough execution with stdio inherited
   const result = spawnSync(cli.binary, args, { stdio: 'inherit' });
   if (result.error) {
     console.error(chalk.red(`Failed to execute '${cli.binary}': ${result.error.message}`));
     process.exitCode = EXIT_CODES.GENERIC_ERROR;
     return;
   }
-  
+
   if (result.status !== null) {
     process.exitCode = result.status;
   }
 }
 
+/** `registerExternalCli` 的可选字段 */
 export interface RegisterOptions {
   binary?: string;
+  /** 写入为 install.default */
   install?: string;
   description?: string;
 }
 
+/**
+ * 向用户注册表追加或更新一条外部 CLI，并写回 `~/.opencli/external-clis.yaml`。
+ * 成功后清空内存缓存，使下次 `loadExternalClis` 读到新内容。
+ */
 export function registerExternalCli(name: string, opts?: RegisterOptions): void {
   const userPath = getUserRegistryPath();
   const configDir = path.dirname(userPath);
@@ -218,12 +262,12 @@ export function registerExternalCli(name: string, opts?: RegisterOptions): void 
       const raw = fs.readFileSync(userPath, 'utf8');
       items = (yaml.load(raw) || []) as ExternalCliConfig[];
     } catch {
-      // Ignore
+      // 用户文件损坏时当空列表处理
     }
   }
 
   const existingIndex = items.findIndex((c) => c.name === name);
-  
+
   const newItem: ExternalCliConfig = {
     name,
     binary: opts?.binary || name,
@@ -241,6 +285,6 @@ export function registerExternalCli(name: string, opts?: RegisterOptions): void 
 
   const dump = yaml.dump(items, { indent: 2, sortKeys: true });
   fs.writeFileSync(userPath, dump, 'utf8');
-  _cachedExternalClis = null; // Invalidate cache so next load reflects the change
+  _cachedExternalClis = null;
   console.log(chalk.dim(userPath));
 }

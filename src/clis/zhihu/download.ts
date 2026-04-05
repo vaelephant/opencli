@@ -5,26 +5,26 @@
  *   opencli zhihu download --url "https://zhuanlan.zhihu.com/p/xxx" --output ./zhihu
  */
 
-import { cli, Strategy } from '../../registry.js';
-import { downloadArticle } from '../../download/article-download.js';
+import { cli, Strategy } from '../../registry.js';  // 导入cli、Strategy
+import { downloadArticle } from '../../download/article-download.js'; // 导入downloadArticle
 
 cli({
-  site: 'zhihu',
-  name: 'download',
-  description: '导出知乎文章为 Markdown 格式',
-  domain: 'zhuanlan.zhihu.com',
-  strategy: Strategy.COOKIE,
+  site: 'zhihu', // 站点
+  name: 'download', // 名称
+  description: '导出知乎文章为 Markdown 格式', // 描述
+  domain: 'zhuanlan.zhihu.com', // 域名
+  strategy: Strategy.COOKIE, // 使用COOKIE策略
   args: [
-    { name: 'url', required: true, help: 'Article URL (zhuanlan.zhihu.com/p/xxx)' },
-    { name: 'output', default: './zhihu-articles', help: 'Output directory' },
-    { name: 'download-images', type: 'boolean', default: false, help: 'Download images locally' },
+    { name: 'url', required: true, help: 'Article URL (zhuanlan.zhihu.com/p/xxx)' }, // 文章URL
+    { name: 'output', default: './zhihu-articles', help: 'Output directory' }, // 输出目录
+    { name: 'download-images', type: 'boolean', default: false, help: 'Download images locally' }, // 下载图片本地
   ],
-  columns: ['title', 'author', 'publish_time', 'status', 'size'],
-  func: async (page, kwargs) => {
-    const url = kwargs.url;
+  columns: ['title', 'author', 'publish_time', 'status', 'size'], // 列标题
+  func: async (page, kwargs) => { // 函数
+    const url = kwargs.url; // 文章URL
 
     // Navigate to article page
-    await page.goto(url);
+    await page.goto(url); // 导航到文章页面
     await page.wait(3);
 
     // Extract article content

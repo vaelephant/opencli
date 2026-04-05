@@ -13,6 +13,9 @@
 import { cli, Strategy } from '../../registry.js';
 import { ArgumentError, AuthRequiredError, CommandExecutionError } from '../../errors.js';
 import type { IPage } from '../../types.js';
+import { log } from '../../logger.js';
+
+const FLOW_SRC = 'weittoutiao.ts';
 
 const MP_HOME = 'https://mp.toutiao.com/';
 /** 微头条官方路径为 weitoutiao（单 t），非 weittoutiao */
@@ -117,6 +120,7 @@ async function ensureOnWeittoutiaoTab(page: IPage): Promise<void> {
 
   // 1) Many users see a white screen when opening publish in a cold tab.
   //    Bootstrap session via mp home first (cookie + SPA shell).
+  log.flow('weitoutiao', 'goto mp home (bootstrap session)', FLOW_SRC);
   await page.goto(MP_HOME, { waitUntil: 'load', settleMs: 4500 });
   await page.wait(2);
 
@@ -128,6 +132,7 @@ async function ensureOnWeittoutiaoTab(page: IPage): Promise<void> {
   }
 
   // 2) Prefer the PC entry you confirmed works: ?from=toutiao_pc
+  log.flow('weitoutiao', 'goto publish (?from=toutiao_pc)', FLOW_SRC);
   await goPublish(WEITOUTIAO_PUBLISH_URL_WITH_QUERY);
   let href: string = await page.evaluate(`(() => String(location.href || ''))()`).catch(() => '');
   if (isWeitoutiaoPublishHref(href) && !(await pageLooksLikeWeittoutiaoBlank(page))) {
@@ -135,6 +140,7 @@ async function ensureOnWeittoutiaoTab(page: IPage): Promise<void> {
   }
 
   // 3) Fallback: path without query
+  log.flow('weitoutiao', 'goto publish (fallback, path without query)', FLOW_SRC);
   await goPublish(WEITOUTIAO_PUBLISH_URL);
   href = await page.evaluate(`(() => String(location.href || ''))()`).catch(() => '');
   if (isWeitoutiaoPublishHref(href) && !(await pageLooksLikeWeittoutiaoBlank(page))) {
@@ -309,26 +315,34 @@ cli({
     const publish = normalizeBool(kwargs.publish);
     const mode: 'draft' | 'publish' = draft && !publish ? 'draft' : 'publish';
 
+    log.flow('weitoutiao', `mode=${mode} textLen=${text.length}`, FLOW_SRC);
+    log.flow('weitoutiao', 'ensure tab + open publish page', FLOW_SRC);
     await ensureOnWeittoutiaoTab(page);
     if (await looksLikeLoginRequired(page)) {
       throw new AuthRequiredError('toutiao.com', '请先在 Chrome 登录头条号/创作者中心（mp.toutiao.com），再重试该命令。');
     }
 
+    log.flow('weitoutiao', 'wait for editor DOM', FLOW_SRC);
     await waitForEditor(page, 30_000);
 
     // Simplest options: do not add location.
+    log.flow('weitoutiao', 'clear optional location field', FLOW_SRC);
     await clearLocationIfAny(page);
 
     const beforeHref: string = await page.evaluate(`(() => String(location.href || ''))()`);
 
+    log.flow('weitoutiao', 'fill editor text', FLOW_SRC);
     await fillText(page, text);
 
     if (mode === 'draft') {
+      log.flow('weitoutiao', 'click 存草稿', FLOW_SRC);
       await clickByText(page, ['存草稿', '保存草稿', '存草稿箱'], 'save draft');
     } else {
+      log.flow('weitoutiao', 'click 发布', FLOW_SRC);
       await clickByText(page, ['发布'], 'publish');
     }
 
+    log.flow('weitoutiao', 'wait for toast / URL change (success or error)', FLOW_SRC);
     const sig = await waitForSuccessOrError(page, { mode, beforeHref, timeoutMs: 25_000 });
     if (!sig.ok) {
       const extra = sig.message ? `\n页面提示：${sig.message}` : '';
@@ -337,6 +351,7 @@ cli({
       );
     }
 
+    log.flow('weitoutiao', `finished ok (signal=${sig.signal ?? '?'})`, FLOW_SRC);
     return {
       ok: true,
       mode,

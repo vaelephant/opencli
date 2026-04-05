@@ -1,5 +1,17 @@
 /**
- * Download utilities: HTTP downloads, yt-dlp wrapper, format conversion.
+ * 下载相关工具集（HTTP 直链、yt-dlp 封装、Cookie 导出、文档落盘、文件名处理）。
+ *
+ * 在工程中的位置：
+ * - **媒体批量下载**：`media-download.ts` 组合本文件的 `httpDownload` / `ytdlpDownload`、`exportCookiesToNetscape` 等；
+ * - **文章导出**：`article-download.ts` 使用 `sanitizeFilename`、`generateFilename`（经本文件导出）；
+ * - **管线步骤**：`pipeline/steps/download.ts` 根据 URL 选择 HTTP 或 yt-dlp；
+ * - **各站点 CLI**：如 bilibili download 等直接依赖 `checkYtdlp`、`requiresYtdlp`。
+ *
+ * 依赖：`yt-dlp` 需用户自行安装并在 PATH 中可用（见 `checkYtdlp`）；HTTP 走 `fetchWithNodeNetwork`。
+ * 
+ * 
+ * 
+ * src/download/index.ts 是 下载模块的公共底层：被 media-download.ts、article-download.ts、管线里的 download 步骤、以及 B 站等 CLI 复用，
  */
 
 import { spawn } from 'node:child_process';
@@ -18,6 +30,7 @@ import { fetchWithNodeNetwork } from '../node-network.js';
 
 export type { BrowserCookie } from '../types.js';
 
+/** `httpDownload` 的选项：Cookie/头、超时、进度、重定向上限 */
 export interface DownloadOptions {
   cookies?: string;
   headers?: Record<string, string>;
@@ -26,6 +39,7 @@ export interface DownloadOptions {
   maxRedirects?: number;
 }
 
+/** `ytdlpDownload` 的选项：Cookie 文件、画质格式、额外参数、进度百分比回调 */
 export interface YtdlpOptions {
   cookies?: string;
   cookiesFile?: string;
@@ -34,12 +48,14 @@ export interface YtdlpOptions {
   onProgress?: (percent: number) => void;
 }
 
-/** Check if yt-dlp is available in PATH. */
+/**
+ * 检测系统 PATH 中是否存在 `yt-dlp` 可执行文件（不随 opencli 打包安装）。
+ */
 export function checkYtdlp(): boolean {
   return isBinaryInstalled('yt-dlp');
 }
 
-/** Domains that host video content and can be downloaded via yt-dlp. */
+/** 视为「视频站」的域名列表：用于 `detectContentType` / `requiresYtdlp` 启发式判断 */
 const VIDEO_PLATFORM_DOMAINS = [
   'youtube.com', 'youtu.be', 'bilibili.com', 'twitter.com',
   'x.com', 'tiktok.com', 'vimeo.com', 'twitch.tv',
@@ -50,7 +66,8 @@ const VIDEO_EXTENSIONS = new Set(['.mp4', '.webm', '.avi', '.mov', '.mkv', '.flv
 const DOC_EXTENSIONS = new Set(['.html', '.htm', '.json', '.xml', '.txt', '.md', '.markdown']);
 
 /**
- * Detect content type from URL and optional headers.
+ * 根据响应头 Content-Type、URL 路径扩展名、是否命中视频站域名，粗分类资源类型。
+ * 用于决定走 HTTP 直下还是 yt-dlp、以及默认扩展名等。
  */
 export function detectContentType(url: string, contentType?: string): 'image' | 'video' | 'document' | 'binary' {
   if (contentType) {
@@ -70,7 +87,7 @@ export function detectContentType(url: string, contentType?: string): 'image' | 
 }
 
 /**
- * Check if URL requires yt-dlp for download.
+ * 该 URL 是否应按「视频平台」处理（通常需 yt-dlp，而非纯 HTTP 拉文件）。
  */
 export function requiresYtdlp(url: string): boolean {
   const urlLower = url.toLowerCase();
@@ -78,7 +95,8 @@ export function requiresYtdlp(url: string): boolean {
 }
 
 /**
- * HTTP download with progress callback.
+ * 使用 Node fetch 下载到本地路径；支持 Cookie/自定义头、手动跟随重定向、下载进度。
+ * 先写入 `.tmp` 再 rename，避免半截文件；重定向到其它主机时会去掉 Cookie 头以防泄露。
  */
 export async function httpDownload(
   url: string,
@@ -111,7 +129,7 @@ export async function httpDownload(
       try {
         await fs.promises.rm(tempPath, { force: true });
       } catch {
-        // Ignore cleanup errors so the original failure is preserved.
+        // 保留原始错误信息，忽略清理失败
       }
     };
 
@@ -126,7 +144,7 @@ export async function httpDownload(
         });
         clearTimeout(timer);
 
-        // Handle redirects before creating any file handles.
+        // 在创建写流之前处理 3xx，避免向错误 URL 落盘
         if (response.status >= 300 && response.status < 400) {
           const location = response.headers.get('location');
           if (location) {
@@ -192,6 +210,7 @@ export async function httpDownload(
   });
 }
 
+/** 将相对或绝对 Location 解析成完整 URL */
 export function resolveRedirectUrl(currentUrl: string, location: string): string {
   return new URL(location, currentUrl).toString();
 }
@@ -204,7 +223,7 @@ function stripCookieHeaders(headers?: Record<string, string>): Record<string, st
 }
 
 /**
- * Export cookies to Netscape format for yt-dlp.
+ * 将浏览器 Cookie 数组写成 Netscape cookie 文件格式，供 yt-dlp `--cookies` 使用。
  */
 export function exportCookiesToNetscape(
   cookies: BrowserCookie[],
@@ -222,7 +241,7 @@ export function exportCookiesToNetscape(
     const includeSubdomains = 'TRUE';
     const cookiePath = cookie.path || '/';
     const secure = cookie.secure ? 'TRUE' : 'FALSE';
-    const expiry = Math.floor(Date.now() / 1000) + 86400 * 365; // 1 year from now
+    const expiry = Math.floor(Date.now() / 1000) + 86400 * 365; // 约一年后过期
     const safeName = cookie.name.replace(/[\t\n\r]/g, '');
     const safeValue = cookie.value.replace(/[\t\n\r]/g, '');
     lines.push(`${domain}\t${includeSubdomains}\t${cookiePath}\t${secure}\t${expiry}\t${safeName}\t${safeValue}`);
@@ -232,12 +251,15 @@ export function exportCookiesToNetscape(
   fs.writeFileSync(filePath, lines.join('\n'));
 }
 
+/** 拼成 HTTP `Cookie:` 请求头字符串 */
 export function formatCookieHeader(cookies: BrowserCookie[]): string {
   return cookies.map((cookie) => `${cookie.name}=${cookie.value}`).join('; ');
 }
 
 /**
- * Download video using yt-dlp.
+ * 调用本机 `yt-dlp` 下载视频到指定路径（需 PATH 可执行）。
+ * 默认 `--cookies-from-browser chrome`；若提供 `cookiesFile` 且存在则改用 `--cookies`。
+ * 从 stdout/stderr 解析百分比行以驱动 `onProgress`。
  */
 export async function ytdlpDownload(
   url: string,
@@ -254,7 +276,6 @@ export async function ytdlpDownload(
     const dir = path.dirname(destPath);
     fs.mkdirSync(dir, { recursive: true });
 
-    // Build yt-dlp arguments
     const args = [
       url,
       '-o', destPath,
@@ -271,7 +292,6 @@ export async function ytdlpDownload(
         args.push('--cookies-from-browser', 'chrome');
       }
     } else {
-      // Try to use browser cookies
       args.push('--cookies-from-browser', 'chrome');
     }
 
@@ -288,7 +308,6 @@ export async function ytdlpDownload(
       const line = data.toString();
       errorOutput += line;
 
-      // Parse progress from yt-dlp output
       const match = line.match(/(\d+\.?\d*)%/);
       if (match && onProgress) {
         const percent = parseFloat(match[1]);
@@ -335,7 +354,7 @@ export async function ytdlpDownload(
 }
 
 /**
- * Save document content to file.
+ * 将文本内容写入文件；可选 JSON 包装或 Markdown frontmatter。
  */
 export async function saveDocument(
   content: string,
@@ -352,7 +371,6 @@ export async function saveDocument(
     if (format === 'json') {
       output = JSON.stringify({ ...metadata, content }, null, 2);
     } else if (format === 'markdown') {
-      // Add frontmatter if metadata exists
       const frontmatter = metadata ? `---\n${Object.entries(metadata).map(([k, v]) => `${k}: ${JSON.stringify(v)}`).join('\n')}\n---\n\n` : '';
       output = frontmatter + content;
     } else {
@@ -367,19 +385,19 @@ export async function saveDocument(
 }
 
 /**
- * Sanitize filename by removing invalid characters.
+ * 清理文件名中的非法字符、压缩空白，并截断长度（用于落盘路径）。
  */
 export function sanitizeFilename(name: string, maxLength: number = 200): string {
   return name
-    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_') // Remove invalid chars
-    .replace(/\s+/g, '_') // Replace spaces with underscores
-    .replace(/_+/g, '_') // Collapse multiple underscores
-    .replace(/^_|_$/g, '') // Trim underscores
+    .replace(/[<>:"/\\|?*\x00-\x1f]/g, '_')
+    .replace(/\s+/g, '_')
+    .replace(/_+/g, '_')
+    .replace(/^_|_$/g, '')
     .slice(0, maxLength);
 }
 
 /**
- * Generate filename from URL if not provided.
+ * 从 URL 推断保存文件名：优先用路径最后一段；否则用 `主机名_序号.扩展名`。
  */
 export function generateFilename(url: string, index: number, extension?: string): string {
   try {
@@ -391,7 +409,6 @@ export function generateFilename(url: string, index: number, extension?: string)
       return sanitizeFilename(basename);
     }
 
-    // Generate from hostname and index
     const ext = extension || detectExtension(url);
     const hostname = parsedUrl.hostname.replace(/^www\./, '');
     return sanitizeFilename(`${hostname}_${index + 1}${ext}`);
@@ -401,9 +418,7 @@ export function generateFilename(url: string, index: number, extension?: string)
   }
 }
 
-/**
- * Detect file extension from URL.
- */
+/** 按 `detectContentType` 结果返回默认扩展名 */
 function detectExtension(url: string): string {
   const type = detectContentType(url);
   switch (type) {
@@ -415,7 +430,7 @@ function detectExtension(url: string): string {
 }
 
 /**
- * Get temp directory for cookie files.
+ * Cookie 临时文件等使用的子目录：`系统临时目录/opencli-download`。
  */
 export function getTempDir(): string {
   return path.join(os.tmpdir(), 'opencli-download');

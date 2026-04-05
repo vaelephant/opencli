@@ -8,11 +8,12 @@
 
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import TurndownService from 'turndown';
-import { httpDownload, sanitizeFilename } from './index.js';
-import { formatBytes } from './progress.js';
+import TurndownService from 'turndown'; // 导入TurndownService
 
-const IMAGE_CONCURRENCY = 5;
+import { httpDownload, sanitizeFilename } from './index.js'; // 导入httpDownload、sanitizeFilename
+import { formatBytes } from './progress.js'; // 导入formatBytes
+
+const IMAGE_CONCURRENCY = 5; // 图片并发数
 
 // ============================================================
 // Types

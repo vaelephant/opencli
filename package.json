@@ -11,7 +11,7 @@
   "type": "module",
   "main": "dist/main.js",
   "bin": {
-    "opencli": "dist/main.js"
+    "openyan": "dist/main.js"
   },
   "exports": {
     ".": "./dist/main.js",

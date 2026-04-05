@@ -21,6 +21,9 @@ import { emitHook, type HookContext } from './hooks.js';
 import { checkDaemonStatus } from './browser/discover.js';
 import { log } from './logger.js';
 import { isElectronApp } from './electron-apps.js';
+
+/** Label for `[flow]` lines so traces map to this module */
+const FLOW_SRC = 'execution.ts';
 import { resolveElectronEndpoint } from './launcher.js';
 
 const _loadedModules = new Set<string>();
@@ -89,16 +92,16 @@ async function runCommand(
   kwargs: CommandArgs,
   debug: boolean,
 ): Promise<unknown> {
-  log.flow('handler', 'runCommand — resolve implementation');
+  log.flow('handler', 'runCommand — resolve implementation', FLOW_SRC);
   const internal = cmd as InternalCliCommand;
   if (internal._lazy && internal._modulePath) {
     const modulePath = internal._modulePath;
     if (!_loadedModules.has(modulePath)) {
       try {
-        log.flow('adapter', `dynamic import ${modulePath}`);
+        log.flow('adapter', `dynamic import ${modulePath}`, FLOW_SRC);
         await import(pathToFileURL(modulePath).href);
         _loadedModules.add(modulePath);
-        log.flow('adapter', 'module registered commands via cli()');
+        log.flow('adapter', 'module registered commands via cli()', FLOW_SRC);
       } catch (err) {
         throw new AdapterLoadError(
           `Failed to load adapter module ${modulePath}: ${getErrorMessage(err)}`,
@@ -112,21 +115,21 @@ async function runCommand(
       if (!page && updated.browser !== false) {
         throw new CommandExecutionError(`Command ${fullName(cmd)} requires a browser session but none was provided`);
       }
-      log.flow('invoke', 'TypeScript handler (lazy-registered func)');
+      log.flow('invoke', 'TypeScript handler (lazy-registered func)', FLOW_SRC);
       return updated.func(page as IPage, kwargs, debug);
     }
     if (updated?.pipeline) {
-      log.flow('invoke', `YAML pipeline — ${updated.pipeline.length} step(s) (lazy)`);
+      log.flow('invoke', `YAML pipeline — ${updated.pipeline.length} step(s) (lazy)`, FLOW_SRC);
       return executePipeline(page, updated.pipeline, { args: kwargs, debug });
     }
   }
 
   if (cmd.func) {
-    log.flow('invoke', 'TypeScript handler (func)');
+    log.flow('invoke', 'TypeScript handler (func)', FLOW_SRC);
     return cmd.func(page as IPage, kwargs, debug);
   }
   if (cmd.pipeline) {
-    log.flow('invoke', `YAML pipeline — ${cmd.pipeline.length} step(s)`);
+    log.flow('invoke', `YAML pipeline — ${cmd.pipeline.length} step(s)`, FLOW_SRC);
     return executePipeline(page, cmd.pipeline, { args: kwargs, debug });
   }
   throw new CommandExecutionError(
@@ -188,9 +191,9 @@ export async function executeCommand(
     throw new ArgumentError(getErrorMessage(err));
   }
 
-  log.flow('execute', fullName(cmd));
-  log.flow('strategy', strategyLabel(cmd));
-  log.flow('args', summarizeKwargs(kwargs));
+  log.flow('execute', fullName(cmd), FLOW_SRC);
+  log.flow('strategy', strategyLabel(cmd), FLOW_SRC);
+  log.flow('args', summarizeKwargs(kwargs), FLOW_SRC);
 
   const hookCtx: HookContext = {
     command: fullName(cmd),
@@ -198,25 +201,25 @@ export async function executeCommand(
     startedAt: Date.now(),
   };
   await emitHook('onBeforeExecute', hookCtx);
-  log.flow('hook', 'onBeforeExecute finished');
+  log.flow('hook', 'onBeforeExecute finished', FLOW_SRC);
 
   let result: unknown;
   try {
     if (shouldUseBrowserSession(cmd)) {
-      log.flow('browser', 'browser session required (shouldUseBrowserSession)');
+      log.flow('browser', 'browser session required (shouldUseBrowserSession)', FLOW_SRC);
       const electron = isElectronApp(cmd.site);
       let cdpEndpoint: string | undefined;
 
       if (electron) {
-        log.flow('electron', 'resolve CDP endpoint for desktop app');
+        log.flow('electron', 'resolve CDP endpoint for desktop app', FLOW_SRC);
         // Electron apps: auto-detect, prompt restart if needed, launch with CDP
         cdpEndpoint = await resolveElectronEndpoint(cmd.site);
-        log.flow('electron', `CDP endpoint ${cdpEndpoint ?? '(none)'}`);
+        log.flow('electron', `CDP endpoint ${cdpEndpoint ?? '(none)'}`, FLOW_SRC);
       } else {
         // Browser Bridge: fail-fast when daemon is up but extension is missing.
         // 300ms timeout avoids a full 2s wait on cold-start.
         const status = await checkDaemonStatus({ timeout: 300 });
-        log.flow('bridge', `daemon running=${status.running} extension connected=${status.extensionConnected}`);
+        log.flow('bridge', `daemon running=${status.running} extension connected=${status.extensionConnected}`, FLOW_SRC);
         if (status.running && !status.extensionConnected) {
           throw new BrowserConnectError(
             'Browser Bridge extension not connected',
@@ -229,43 +232,43 @@ export async function executeCommand(
       }
 
       ensureRequiredEnv(cmd);
-      log.flow('env', 'required env vars satisfied');
+      log.flow('env', 'required env vars satisfied', FLOW_SRC);
       const BrowserFactory = getBrowserFactory(cmd.site);
-      log.flow('factory', `using ${BrowserFactory.name || 'BrowserFactory'}`);
+      log.flow('factory', `using ${BrowserFactory.name || 'BrowserFactory'}`, FLOW_SRC);
       result = await browserSession(BrowserFactory, async (page) => {
         const preNavUrl = resolvePreNav(cmd);
         if (preNavUrl) {
-          log.flow('pre-nav', `target ${preNavUrl}`);
+          log.flow('pre-nav', `target ${preNavUrl}`, FLOW_SRC);
           const skip = await isAlreadyOnDomain(page, preNavUrl);
           if (skip) {
-            log.flow('pre-nav', 'already on target domain — skip goto');
+            log.flow('pre-nav', 'already on target domain — skip goto', FLOW_SRC);
             if (debug) log.debug('[pre-nav] Already on target domain, skipping navigation');
           } else {
-            log.flow('pre-nav', 'loading page (goto)');
+            log.flow('pre-nav', 'loading page (goto)', FLOW_SRC);
             try {
               await page.goto(preNavUrl);
-              log.flow('pre-nav', 'goto completed');
+              log.flow('pre-nav', 'goto completed', FLOW_SRC);
             } catch (err) {
-              log.flow('pre-nav', `goto failed: ${err instanceof Error ? err.message : String(err)}`);
+              log.flow('pre-nav', `goto failed: ${err instanceof Error ? err.message : String(err)}`, FLOW_SRC);
               if (debug) log.debug(`[pre-nav] Failed to navigate to ${preNavUrl}: ${err instanceof Error ? err.message : err}`);
             }
           }
         } else {
-          log.flow('pre-nav', 'skipped (no domain pre-navigation for this command)');
+          log.flow('pre-nav', 'skipped (no domain pre-navigation for this command)', FLOW_SRC);
         }
         const timeoutSec = cmd.timeoutSeconds ?? DEFAULT_BROWSER_COMMAND_TIMEOUT;
-        log.flow('timeout', `command body — ${timeoutSec}s max`);
+        log.flow('timeout', `command body — ${timeoutSec}s max`, FLOW_SRC);
         return runWithTimeout(runCommand(cmd, page, kwargs, debug), {
           timeout: timeoutSec,
           label: fullName(cmd),
         });
       }, { workspace: `site:${cmd.site}`, cdpEndpoint });
     } else {
-      log.flow('browser', 'no browser page — running without Browser Bridge / CDP');
+      log.flow('browser', 'no browser page — running without Browser Bridge / CDP', FLOW_SRC);
       // Non-browser commands: apply timeout only when explicitly configured.
       const timeout = cmd.timeoutSeconds;
       if (timeout !== undefined && timeout > 0) {
-        log.flow('timeout', `non-browser command — ${timeout}s max`);
+        log.flow('timeout', `non-browser command — ${timeout}s max`, FLOW_SRC);
         result = await runWithTimeout(runCommand(cmd, null, kwargs, debug), {
           timeout,
           label: fullName(cmd),
@@ -285,8 +288,8 @@ export async function executeCommand(
   hookCtx.finishedAt = Date.now();
   await emitHook('onAfterExecute', hookCtx, result);
   if (hookCtx.startedAt !== undefined) {
-    log.flow('done', `finished in ${hookCtx.finishedAt - hookCtx.startedAt}ms`);
+    log.flow('done', `finished in ${hookCtx.finishedAt - hookCtx.startedAt}ms`, FLOW_SRC);
   }
-  log.flow('hook', 'onAfterExecute finished');
+  log.flow('hook', 'onAfterExecute finished', FLOW_SRC);
   return result;
 }

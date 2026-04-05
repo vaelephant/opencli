@@ -4,6 +4,8 @@ import { TimeoutError } from './errors.js';
 import { isElectronApp } from './electron-apps.js';
 import { log } from './logger.js';
 
+const FLOW_SRC = 'runtime.ts';
+
 /**
  * Returns the appropriate browser factory based on site type.
  * Uses CDPBridge for registered Electron apps, otherwise BrowserBridge.
@@ -76,7 +78,7 @@ export async function browserSession<T>(
   const factoryName = BrowserFactory.name || 'BrowserFactory';
   const ws = opts.workspace ?? '(default)';
   const cdp = opts.cdpEndpoint ? ` CDP=${opts.cdpEndpoint}` : '';
-  log.flow('session', `open ${factoryName} workspace=${ws}${cdp}`);
+  log.flow('session', `open ${factoryName} workspace=${ws}${cdp}`, FLOW_SRC);
   const browser = new BrowserFactory();
   try {
     const page = await browser.connect({
@@ -84,10 +86,10 @@ export async function browserSession<T>(
       workspace: opts.workspace,
       cdpEndpoint: opts.cdpEndpoint,
     });
-    log.flow('session', `${factoryName} connected — page handle ready`);
+    log.flow('session', `${factoryName} connected — page handle ready`, FLOW_SRC);
     return await fn(page);
   } finally {
-    log.flow('session', `close ${factoryName}`);
+    log.flow('session', `close ${factoryName}`, FLOW_SRC);
     await browser.close().catch(() => {});
   }
 }
